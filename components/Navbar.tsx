@@ -1,25 +1,29 @@
 "use client";
 
 import React, { useState } from "react";
-import { Copy, Check, Users, Sparkles, LogOut } from "lucide-react";
+import { Copy, Check, Users, Sparkles, LogOut, Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface NavbarProps {
   joinCode: string;
   feederName: string;
   isDemoMode: boolean;
+  isPushSubscribed?: boolean;
   onOpenInvite: () => void;
   onSwitchHousehold: () => void;
   onChangeNickname: () => void;
+  onTogglePush?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   joinCode,
   feederName,
   isDemoMode,
+  isPushSubscribed,
   onOpenInvite,
   onSwitchHousehold,
   onChangeNickname,
+  onTogglePush,
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -104,6 +108,21 @@ export const Navbar: React.FC<NavbarProps> = ({
         >
           <Users className="w-4 h-4 text-nomciu-charcoal" />
         </button>
+
+        {/* Push Notifications Bell Toggle */}
+        {onTogglePush && (
+          <button
+            onClick={onTogglePush}
+            title={isPushSubscribed ? "Push Alerts Active (Click to manage)" : "Turn on Push Alerts"}
+            className={`w-8 h-8 rounded-full border flex items-center justify-center shadow-sm transition active:scale-95 ${
+              isPushSubscribed
+                ? "bg-amber-50 border-amber-300 text-amber-600"
+                : "bg-white border-nomciu-border/70 text-nomciu-muted hover:text-nomciu-charcoal"
+            }`}
+          >
+            <Bell className="w-3.5 h-3.5" />
+          </button>
+        )}
 
         {/* Nickname Avatar & Settings */}
         {feederName && (

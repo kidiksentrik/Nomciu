@@ -7,8 +7,10 @@ import { FeedNowButton } from "@/components/FeedNowButton";
 import { MealGrid } from "@/components/MealGrid";
 import { OnboardingModal } from "@/components/OnboardingModal";
 import { InviteModal } from "@/components/InviteModal";
+import { NotificationBanner } from "@/components/NotificationBanner";
 import { useHousehold } from "@/hooks/useHousehold";
 import { useMeals } from "@/hooks/useMeals";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { Loader2 } from "lucide-react";
 
 export default function Home() {
@@ -30,6 +32,14 @@ export default function Home() {
     toggleMeal,
     resetToday,
   } = useMeals(household?.id || null, feederName);
+
+  const {
+    isSupported: isPushSupported,
+    permission: pushPermission,
+    isSubscribed: isPushSubscribed,
+    isSubscribing: isPushSubscribing,
+    subscribe: subscribeToPush,
+  } = usePushNotifications(household?.id || null, feederName);
 
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState<"household" | "feeder">("household");
@@ -94,6 +104,8 @@ export default function Home() {
             joinCode={household?.joinCode || ""}
             feederName={feederName}
             isDemoMode={isDemoMode}
+            isPushSubscribed={isPushSubscribed}
+            onTogglePush={isPushSubscribed ? undefined : subscribeToPush}
             onOpenInvite={() => setIsInviteOpen(true)}
             onSwitchHousehold={handleSwitchHousehold}
             onChangeNickname={() => {
@@ -101,6 +113,18 @@ export default function Home() {
               setIsOnboardingOpen(true);
             }}
           />
+
+          {/* Background Push Alerts Banner */}
+          {household && (
+            <NotificationBanner
+              petName={household.petName}
+              isSupported={isPushSupported}
+              permission={pushPermission}
+              isSubscribed={isPushSubscribed}
+              isSubscribing={isPushSubscribing}
+              onSubscribe={subscribeToPush}
+            />
+          )}
 
           {/* Hero Zone: Pet Avatar & Live Emotion Headline */}
           {household && (
@@ -116,7 +140,7 @@ export default function Home() {
             <FeedNowButton
               dailyLog={dailyLog}
               feederName={feederName}
-              onFeed={feedMeal}
+              onFeed={(type) => feedMeal(type, undefined, household.petName)}
               onUndoMeal={toggleMeal}
             />
           )}

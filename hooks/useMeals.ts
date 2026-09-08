@@ -121,7 +121,7 @@ export function useMeals(householdId: string | null, feederName: string) {
 
   // Feed a specific meal
   const feedMeal = useCallback(
-    async (mealType: MealType, customFeeder?: string) => {
+    async (mealType: MealType, customFeeder?: string, petName?: string) => {
       const who = (customFeeder || feederName || "Roommate").trim();
       const timeStr = formatTime();
 
@@ -135,9 +135,30 @@ export function useMeals(householdId: string | null, feederName: string) {
       };
 
       await saveMealLog(updated);
+
+      // Trigger background push notifications to all other roommates
+      if (householdId) {
+        const mealLabels: Record<MealType, string> = {
+          breakfast: "Breakfast",
+          lunch: "Lunch",
+          dinner: "Dinner",
+        };
+        fetch("/api/notify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            householdId,
+            petName: petName || "your pet",
+            mealLabel: mealLabels[mealType],
+            fedBy: who,
+            time: timeStr,
+          }),
+        }).catch((err) => console.warn("Failed to dispatch push notification:", err));
+      }
+
       return updated;
     },
-    [dailyLog, feederName, saveMealLog]
+    [dailyLog, feederName, householdId, saveMealLog]
   );
 
   // Undo / toggle feeding state

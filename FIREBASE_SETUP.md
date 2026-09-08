@@ -59,8 +59,12 @@ service cloud.firestore {
       match /logs/{dateString} {
         allow read, write: if true;
       }
+
+      // Web Push notification subscriptions
+      match /subscriptions/{deviceId} {
+        allow read, write: if true;
+      }
     }
-    
   }
 }
 ```

@@ -1,14 +1,49 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <defs>
-    <linearGradient id="nomciu-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF7E5F" />
-      <stop offset="100%" stop-color="#FEB47B" />
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14161E" />
+      <stop offset="100%" stop-color="#090A0E" />
     </linearGradient>
+    <linearGradient id="feeder-body" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#242836" />
+      <stop offset="50%" stop-color="#1B1E29" />
+      <stop offset="100%" stop-color="#14161E" />
+    </linearGradient>
+    <linearGradient id="neon-slit" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF7A59" />
+      <stop offset="100%" stop-color="#E11D48" />
+    </linearGradient>
+    <filter id="neon-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
-  <rect width="512" height="512" rx="128" fill="url(#nomciu-grad)" />
-  <!-- Paw print icon -->
-  <circle cx="170" cy="180" r="45" fill="#FFFFFF" opacity="0.95" />
-  <circle cx="342" cy="180" r="45" fill="#FFFFFF" opacity="0.95" />
-  <circle cx="256" cy="130" r="45" fill="#FFFFFF" opacity="0.95" />
-  <path d="M256 240 C190 240 145 280 155 355 C163 410 215 425 256 425 C297 425 349 410 357 355 C367 280 322 240 256 240 Z" fill="#FFFFFF" opacity="0.95" />
+
+  <!-- Dark Squircle Canvas -->
+  <rect width="512" height="512" rx="120" fill="url(#bg-grad)" />
+
+  <!-- Double Bowl Tray Base -->
+  <path d="M 120 400 C 120 370 160 360 210 360 L 302 360 C 352 360 392 370 392 400 C 392 430 352 440 302 440 L 210 440 C 160 440 120 430 120 400 Z" fill="#13151D" stroke="#25293A" stroke-width="6" />
+  
+  <!-- Left Bowl Well -->
+  <ellipse cx="205" cy="400" rx="60" ry="24" fill="#0D0E13" stroke="#2D3246" stroke-width="4" />
+  <!-- Right Bowl Well -->
+  <ellipse cx="307" cy="400" rx="60" ry="24" fill="#0D0E13" stroke="#2D3246" stroke-width="4" />
+
+  <!-- Feeder Base & Dispenser Neck -->
+  <rect x="196" y="280" width="120" height="90" rx="20" fill="#181B24" stroke="#282C3D" stroke-width="4" />
+  <rect x="236" y="325" width="40" height="28" rx="8" fill="#090A0E" />
+
+  <!-- Main Feeder Silo (Cylinder) -->
+  <rect x="176" y="100" width="160" height="190" rx="45" fill="url(#feeder-body)" stroke="#2D3346" stroke-width="4" />
+
+  <!-- Vertical Neon Level Window (Glow) -->
+  <rect x="248" y="145" width="16" height="85" rx="8" fill="url(#neon-slit)" filter="url(#neon-glow)" />
+
+  <!-- Digital Clock / Status Pill -->
+  <rect x="220" y="295" width="72" height="18" rx="9" fill="#090A0E" />
+  <text x="256" y="308" fill="#FFFFFF" font-family="-apple-system, system-ui, sans-serif" font-weight="900" font-size="11" text-anchor="middle" letter-spacing="1">20:00</text>
 </svg>

@@ -4,15 +4,25 @@
   "description": "Sleek, minimal, mobile-first Pet Feeding Tracker PWA for roommates and families",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FAF6F0",
-  "theme_color": "#FAF6F0",
+  "background_color": "#0D0E13",
+  "theme_color": "#0D0E13",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/icon.svg",
-      "sizes": "192x192 512x512",
-      "type": "image/svg+xml",
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ]
 }

@@ -11,8 +11,8 @@ export const metadata: Metadata = {
     title: "Nomciu",
   },
   icons: {
-    icon: "/icon.svg",
-    apple: "/icon.svg",
+    icon: "/icon.png",
+    apple: "/apple-touch-icon.png",
   },
 };
 

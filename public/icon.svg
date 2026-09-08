@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="nomciu-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF7E5F" />
+      <stop offset="100%" stop-color="#FEB47B" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="url(#nomciu-grad)" />
+  <!-- Paw print icon -->
+  <circle cx="170" cy="180" r="45" fill="#FFFFFF" opacity="0.95" />
+  <circle cx="342" cy="180" r="45" fill="#FFFFFF" opacity="0.95" />
+  <circle cx="256" cy="130" r="45" fill="#FFFFFF" opacity="0.95" />
+  <path d="M256 240 C190 240 145 280 155 355 C163 410 215 425 256 425 C297 425 349 410 357 355 C367 280 322 240 256 240 Z" fill="#FFFFFF" opacity="0.95" />
+</svg>

@@ -1,0 +1,18 @@
+{
+  "name": "Nomciu - Pet Feeding Tracker",
+  "short_name": "Nomciu",
+  "description": "Sleek, minimal, mobile-first Pet Feeding Tracker PWA for roommates and families",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF6F0",
+  "theme_color": "#FAF6F0",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

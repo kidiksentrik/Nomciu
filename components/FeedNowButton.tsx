@@ -113,17 +113,13 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
               {/* Radiant Center Glow */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.25),transparent_65%)] pointer-events-none" />
 
-              {/* Centered Content: Badge + Giant Nomciu! Label + Subtitle */}
-              <div className="flex flex-col items-center justify-center text-center w-full z-10 py-1">
-                <span className="inline-flex items-center gap-1.5 text-[11px] font-black tracking-widest text-white bg-black/25 px-3 py-0.5 rounded-full mb-1 border border-white/20 shadow-xs uppercase">
-                  <Flame className="w-3 h-3 fill-amber-300 text-amber-300 animate-bounce" />
-                  {windowInfo.label} • Press to feed
-                </span>
-                <span className="text-3xl sm:text-4xl font-black tracking-wider text-white drop-shadow-[0_3px_6px_rgba(0,0,0,0.6)] select-none">
+              {/* Centered Content: Giant Nomciu! + Clean Meal Subtitle */}
+              <div className="flex flex-col items-center justify-center text-center w-full z-10">
+                <span className="text-4xl sm:text-5xl font-black tracking-wider text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)] select-none">
                   Nomciu!
                 </span>
-                <span className="text-xs font-semibold text-red-100/95 normal-case tracking-normal mt-0.5 drop-shadow-xs">
-                  {windowInfo.windowDescription}
+                <span className="text-xs sm:text-sm font-extrabold text-red-100/90 uppercase tracking-widest mt-1 drop-shadow-xs">
+                  {windowInfo.label}
                 </span>
               </div>
             </motion.button>

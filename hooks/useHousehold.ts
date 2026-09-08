@@ -43,11 +43,17 @@ export function useHousehold() {
 
     setIsLoading(true);
 
+    // Safety timeout: Ensure app never hangs on loading state indefinitely
+    const safetyTimer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3500);
+
     if (isFirebaseConfigured && db) {
       const householdRef = doc(db, "households", householdId);
       const unsubscribe = onSnapshot(
         householdRef,
         (docSnap) => {
+          clearTimeout(safetyTimer);
           if (docSnap.exists()) {
             setHousehold(docSnap.data() as Household);
             setError(null);
@@ -58,13 +64,17 @@ export function useHousehold() {
           setIsLoading(false);
         },
         (err) => {
+          clearTimeout(safetyTimer);
           console.error("Firestore household subscription error:", err);
           setError("Failed to sync household data.");
           setIsLoading(false);
         }
       );
 
-      return () => unsubscribe();
+      return () => {
+        clearTimeout(safetyTimer);
+        unsubscribe();
+      };
     } else {
       // Local demo mode
       const loadMock = () => {

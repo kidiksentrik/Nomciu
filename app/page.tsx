@@ -43,13 +43,12 @@ export default function Home() {
 
     if (joinCode && (!household || household.joinCode !== joinCode)) {
       joinHousehold(joinCode).catch(() => {
-        // If auto join fails, prompt user
         setIsOnboardingOpen(true);
       });
     }
   }, [household, joinHousehold]);
 
-  // If not loading, verify whether household or feeder nickname is missing
+  // Synchronize modal open state with missing household or feeder nickname
   useEffect(() => {
     if (!isHouseholdLoading) {
       if (!household) {
@@ -63,6 +62,12 @@ export default function Home() {
       }
     }
   }, [household, feederName, isHouseholdLoading]);
+
+  const handleSwitchHousehold = () => {
+    leaveHousehold();
+    setOnboardingStep("household");
+    setIsOnboardingOpen(true);
+  };
 
   // Loading state
   if (isHouseholdLoading) {
@@ -90,7 +95,7 @@ export default function Home() {
             feederName={feederName}
             isDemoMode={isDemoMode}
             onOpenInvite={() => setIsInviteOpen(true)}
-            onSwitchHousehold={leaveHousehold}
+            onSwitchHousehold={handleSwitchHousehold}
             onChangeNickname={() => {
               setOnboardingStep("feeder");
               setIsOnboardingOpen(true);
@@ -106,16 +111,17 @@ export default function Home() {
             />
           )}
 
-          {/* Hero Action: Tactile FEED NOW Button */}
+          {/* Hero Action: Tactile FEED NOW Button or Completed Status */}
           {household && (
             <FeedNowButton
               dailyLog={dailyLog}
               feederName={feederName}
               onFeed={feedMeal}
+              onUndoMeal={toggleMeal}
             />
           )}
 
-          {/* Daily 3-Meal Tracker Grid */}
+          {/* Daily Meal Tracker: shows today's completed feedings & collapsible full view */}
           {household && (
             <MealGrid
               dailyLog={dailyLog}
@@ -147,7 +153,11 @@ export default function Home() {
         }}
         onCreateHousehold={createHousehold}
         onJoinHousehold={joinHousehold}
-        onClose={() => setIsOnboardingOpen(false)}
+        onClose={() => {
+          if (household) {
+            setIsOnboardingOpen(false);
+          }
+        }}
       />
 
       {/* Invite Roommates Modal */}

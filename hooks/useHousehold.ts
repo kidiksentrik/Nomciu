@@ -13,27 +13,38 @@ const STORAGE_KEYS = {
 };
 
 export function useHousehold() {
+  const [householdId, setHouseholdId] = useState<string | null>(null);
   const [household, setHousehold] = useState<Household | null>(null);
   const [feederName, setFeederName] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load feeder nickname & current household ID on mount
+  // 1. Initial load of localStorage keys on mount
   useEffect(() => {
     if (typeof window === "undefined") return;
     const storedFeeder = localStorage.getItem(STORAGE_KEYS.FEEDER_NAME) || "";
     const storedHouseholdId = localStorage.getItem(STORAGE_KEYS.CURRENT_HOUSEHOLD_ID);
 
     setFeederName(storedFeeder);
+    setHouseholdId(storedHouseholdId);
 
     if (!storedHouseholdId) {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // 2. Reactive listener on householdId
+  useEffect(() => {
+    if (!householdId) {
+      setHousehold(null);
       setIsLoading(false);
       return;
     }
 
-    // Connect to Firestore or Local Mock
+    setIsLoading(true);
+
     if (isFirebaseConfigured && db) {
-      const householdRef = doc(db, "households", storedHouseholdId);
+      const householdRef = doc(db, "households", householdId);
       const unsubscribe = onSnapshot(
         householdRef,
         (docSnap) => {
@@ -55,13 +66,13 @@ export function useHousehold() {
 
       return () => unsubscribe();
     } else {
-      // Local demo mode fallback
+      // Local demo mode
       const loadMock = () => {
         try {
           const raw = localStorage.getItem(STORAGE_KEYS.MOCK_HOUSEHOLDS);
           const map: Record<string, Household> = raw ? JSON.parse(raw) : {};
-          if (map[storedHouseholdId]) {
-            setHousehold(map[storedHouseholdId]);
+          if (map[householdId]) {
+            setHousehold(map[householdId]);
             setError(null);
           } else {
             setHousehold(null);
@@ -74,7 +85,6 @@ export function useHousehold() {
 
       loadMock();
 
-      // Listen for updates across tabs in demo mode
       let channel: BroadcastChannel | null = null;
       if (typeof BroadcastChannel !== "undefined") {
         channel = new BroadcastChannel("nomciu_sync");
@@ -89,7 +99,7 @@ export function useHousehold() {
         channel?.close();
       };
     }
-  }, []);
+  }, [householdId]);
 
   // Save feeder name to localStorage
   const saveFeederName = useCallback((name: string) => {
@@ -134,6 +144,7 @@ export function useHousehold() {
         }
 
         localStorage.setItem(STORAGE_KEYS.CURRENT_HOUSEHOLD_ID, joinCode);
+        setHouseholdId(joinCode);
         setHousehold(newHousehold);
         return newHousehold;
       } catch (err: any) {
@@ -166,6 +177,7 @@ export function useHousehold() {
 
         const data = docSnap.data() as Household;
         localStorage.setItem(STORAGE_KEYS.CURRENT_HOUSEHOLD_ID, cleanCode);
+        setHouseholdId(cleanCode);
         setHousehold(data);
         return data;
       } else {
@@ -179,6 +191,7 @@ export function useHousehold() {
         }
 
         localStorage.setItem(STORAGE_KEYS.CURRENT_HOUSEHOLD_ID, cleanCode);
+        setHouseholdId(cleanCode);
         setHousehold(found);
         return found;
       }
@@ -193,6 +206,7 @@ export function useHousehold() {
   // Switch or leave household
   const leaveHousehold = useCallback(() => {
     localStorage.removeItem(STORAGE_KEYS.CURRENT_HOUSEHOLD_ID);
+    setHouseholdId(null);
     setHousehold(null);
   }, []);
 

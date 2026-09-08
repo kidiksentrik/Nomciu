@@ -42,6 +42,20 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  // Keep step synchronized with initialStep whenever modal opens
+  React.useEffect(() => {
+    if (isOpen) {
+      setStep(initialStep);
+      setErrorMsg("");
+    }
+  }, [isOpen, initialStep]);
+
+  React.useEffect(() => {
+    if (feederName) {
+      setNickname(feederName);
+    }
+  }, [feederName]);
+
   if (!isOpen) return null;
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {

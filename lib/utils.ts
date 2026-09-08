@@ -1,5 +1,13 @@
 import { DailyMealLog, MealType } from "@/types";
 
+export interface TimeWindowInfo {
+  currentMeal: MealType;
+  label: string;
+  windowDescription: string;
+  emoji: string;
+  nextMeal: MealType | null;
+}
+
 /**
  * Returns current date formatted as YYYY-MM-DD using local time
  */
@@ -43,9 +51,52 @@ export function getDefaultDailyMealLog(dateString: string): DailyMealLog {
 }
 
 /**
+ * Returns time window info based on current hour:
+ * - Breakfast: 05:00 - 11:00 (until 11:00 AM)
+ * - Lunch: 11:00 - 16:00 (11:00 AM - 4:00 PM)
+ * - Dinner: 16:00 - 24:00 (after 4:00 PM)
+ */
+export function getCurrentTimeWindow(date: Date = new Date()): TimeWindowInfo {
+  const hour = date.getHours();
+
+  if (hour < 11) {
+    return {
+      currentMeal: "breakfast",
+      label: "Breakfast",
+      windowDescription: "Morning window (until 11:00 AM)",
+      emoji: "🥣",
+      nextMeal: "lunch",
+    };
+  } else if (hour < 16) {
+    return {
+      currentMeal: "lunch",
+      label: "Lunch",
+      windowDescription: "Midday window (11:00 AM - 4:00 PM)",
+      emoji: "🐟",
+      nextMeal: "dinner",
+    };
+  } else {
+    return {
+      currentMeal: "dinner",
+      label: "Dinner",
+      windowDescription: "Evening window (after 4:00 PM)",
+      emoji: "🍖",
+      nextMeal: null,
+    };
+  }
+}
+
+/**
  * Finds next pending meal according to time of day and completed state
  */
-export function getNextPendingMeal(dailyLog: DailyMealLog): MealType | null {
+export function getNextPendingMeal(dailyLog: DailyMealLog, date: Date = new Date()): MealType | null {
+  const windowInfo = getCurrentTimeWindow(date);
+  // Prioritize current time window meal if not yet fed
+  if (!dailyLog[windowInfo.currentMeal].completed) {
+    return windowInfo.currentMeal;
+  }
+
+  // Otherwise, find any next pending meal in chronological order
   if (!dailyLog.breakfast.completed) return "breakfast";
   if (!dailyLog.lunch.completed) return "lunch";
   if (!dailyLog.dinner.completed) return "dinner";
@@ -55,11 +106,13 @@ export function getNextPendingMeal(dailyLog: DailyMealLog): MealType | null {
 /**
  * Calculates current progress summary and emotional headline
  */
-export function getPetStatusHeadline(petName: string, dailyLog: DailyMealLog): {
+export function getPetStatusHeadline(petName: string, dailyLog: DailyMealLog, date: Date = new Date()): {
   headline: string;
   emoji: string;
   isAllCompleted: boolean;
-  nextMeal: MealType | null;
+  isCurrentWindowFed: boolean;
+  targetMeal: MealType;
+  fedInfo?: { fedBy: string | null; fedAt: string | null };
 } {
   const completedCount = [
     dailyLog.breakfast.completed,
@@ -67,39 +120,41 @@ export function getPetStatusHeadline(petName: string, dailyLog: DailyMealLog): {
     dailyLog.dinner.completed,
   ].filter(Boolean).length;
 
+  const windowInfo = getCurrentTimeWindow(date);
+  const currentMealItem = dailyLog[windowInfo.currentMeal];
+
   if (completedCount === 3) {
     return {
       headline: `${petName}'s belly is full today!`,
       emoji: "😸",
       isAllCompleted: true,
-      nextMeal: null,
+      isCurrentWindowFed: true,
+      targetMeal: windowInfo.currentMeal,
+      fedInfo: { fedBy: currentMealItem.fedBy, fedAt: currentMealItem.fedAt },
     };
   }
 
-  const nextMeal = getNextPendingMeal(dailyLog);
-
-  if (nextMeal === "breakfast") {
+  if (currentMealItem.completed) {
+    // Current meal already fed!
+    const nextPending = getNextPendingMeal(dailyLog, date);
     return {
-      headline: `${petName} is waiting for breakfast!`,
-      emoji: "🥣",
+      headline: `${petName} had ${windowInfo.label.toLowerCase()}!`,
+      emoji: "😸",
       isAllCompleted: false,
-      nextMeal: "breakfast",
-    };
-  } else if (nextMeal === "lunch") {
-    return {
-      headline: `${petName} is waiting for lunch!`,
-      emoji: "😿",
-      isAllCompleted: false,
-      nextMeal: "lunch",
-    };
-  } else {
-    return {
-      headline: `${petName} is waiting for dinner!`,
-      emoji: "🐟",
-      isAllCompleted: false,
-      nextMeal: "dinner",
+      isCurrentWindowFed: true,
+      targetMeal: nextPending || windowInfo.currentMeal,
+      fedInfo: { fedBy: currentMealItem.fedBy, fedAt: currentMealItem.fedAt },
     };
   }
+
+  // Not fed yet for the current time window!
+  return {
+    headline: `${petName} is waiting for ${windowInfo.label.toLowerCase()}!`,
+    emoji: windowInfo.emoji,
+    isAllCompleted: false,
+    isCurrentWindowFed: false,
+    targetMeal: windowInfo.currentMeal,
+  };
 }
 
 /**

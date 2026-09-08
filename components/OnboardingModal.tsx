@@ -2,13 +2,15 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, PlusCircle, ArrowRight, Check, KeyRound, Camera } from "lucide-react";
+import { Sparkles, PlusCircle, ArrowRight, Check, KeyRound, Camera, RotateCcw } from "lucide-react";
 import { PRESET_PET_AVATARS } from "@/lib/utils";
+import { RecentHousehold } from "@/types";
 
 interface OnboardingModalProps {
   isOpen: boolean;
   initialStep?: "household" | "feeder";
   feederName: string;
+  recentHouseholds?: RecentHousehold[];
   onSaveFeederName: (name: string) => void;
   onCreateHousehold: (petName: string, photoUrl: string) => Promise<any>;
   onJoinHousehold: (code: string) => Promise<any>;
@@ -19,6 +21,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   isOpen,
   initialStep = "household",
   feederName,
+  recentHouseholds = [],
   onSaveFeederName,
   onCreateHousehold,
   onJoinHousehold,
@@ -188,6 +191,73 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                 </p>
               </div>
 
+              {/* Quick Reconnect Card if recent household found */}
+              {recentHouseholds && recentHouseholds.length > 0 && (
+                <div className="mb-5 p-3.5 rounded-2xl bg-gradient-to-br from-[#1C1F2D] to-[#141620] border border-nomciu-peach/40 shadow-tactile">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-nomciu-peach flex items-center gap-1.5">
+                      <Sparkles className="w-3 h-3 text-nomciu-peach animate-pulse" />
+                      <span>Recently Connected</span>
+                    </span>
+                    <span className="text-[10px] text-stone-400 font-mono">Instant 1-Tap</span>
+                  </div>
+
+                  <div className="space-y-2">
+                    {recentHouseholds.map((rh) => (
+                      <div
+                        key={rh.id}
+                        className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-[#0E1017] border border-[#2B3045] hover:border-nomciu-peach/50 transition"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={rh.petPhotoUrl || PRESET_PET_AVATARS[0].url}
+                            alt={rh.petName}
+                            className="w-10 h-10 rounded-xl object-cover border border-[#3A405A] shrink-0"
+                          />
+                          <div className="min-w-0">
+                            <h4 className="text-sm font-black text-white truncate flex items-center gap-1.5 leading-none">
+                              <span>{rh.petName}</span>
+                              <span className="text-xs font-mono text-nomciu-peach font-bold bg-[#1C1F2B] px-1.5 py-0.5 rounded-md border border-[#2E3347]">
+                                #{rh.id}
+                              </span>
+                            </h4>
+                            <p className="text-[10px] text-stone-400 truncate mt-1">
+                              Tap to resume tracking
+                            </p>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          disabled={loading}
+                          onClick={async () => {
+                            setLoading(true);
+                            setErrorMsg("");
+                            try {
+                              await onJoinHousehold(rh.id);
+                              if (feederName) {
+                                onClose?.();
+                              } else {
+                                setStep("feeder");
+                              }
+                            } catch (err: any) {
+                              setErrorMsg(err?.message || "Failed to reconnect.");
+                            } finally {
+                              setLoading(false);
+                            }
+                          }}
+                          className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-nomciu-peach to-orange-500 hover:brightness-110 text-white font-black text-xs shadow-tactile transition active:scale-95 shrink-0 flex items-center gap-1.5 disabled:opacity-50"
+                        >
+                          <RotateCcw className="w-3 h-3" />
+                          <span>{loading ? "..." : "Reconnect"}</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Tabs: Create vs Join */}
               <div className="flex bg-[#10121A] p-1 rounded-2xl mb-5 border border-[#252838]">
                 <button
@@ -329,6 +399,21 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                     <p className="text-[11px] text-nomciu-muted mt-1.5 text-center">
                       Ask your roommate for the code from their screen.
                     </p>
+                    {recentHouseholds && recentHouseholds.length > 0 && (
+                      <div className="flex items-center justify-center gap-1.5 mt-2.5 flex-wrap">
+                        <span className="text-[11px] text-stone-400 font-semibold">Recent:</span>
+                        {recentHouseholds.map((rh) => (
+                          <button
+                            key={rh.id}
+                            type="button"
+                            onClick={() => setJoinCodeInput(rh.id)}
+                            className="px-2 py-0.5 rounded-lg bg-[#181B26] hover:bg-[#232736] text-[11px] font-mono font-bold text-nomciu-peach border border-[#282C3D] transition active:scale-95"
+                          >
+                            #{rh.id} ({rh.petName})
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   <button

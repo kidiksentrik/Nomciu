@@ -1,14 +1,21 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Household } from "@/types";
+import { Household, RecentHousehold } from "@/types";
 import { db, isFirebaseConfigured } from "@/lib/firebase";
 import { doc, onSnapshot, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { generateJoinCode } from "@/lib/utils";
+import {
+  getStoredHouseholdId,
+  saveStoredHouseholdId,
+  clearStoredHouseholdId,
+  getStoredFeederName,
+  saveStoredFeederName,
+  getRecentHouseholds,
+  recordRecentHousehold,
+} from "@/lib/storage";
 
 const STORAGE_KEYS = {
-  CURRENT_HOUSEHOLD_ID: "nomciu_current_household_id",
-  FEEDER_NAME: "nomciu_feeder_name",
   MOCK_HOUSEHOLDS: "nomciu_mock_households",
 };
 
@@ -16,17 +23,20 @@ export function useHousehold() {
   const [householdId, setHouseholdId] = useState<string | null>(null);
   const [household, setHousehold] = useState<Household | null>(null);
   const [feederName, setFeederName] = useState<string>("");
+  const [recentHouseholds, setRecentHouseholds] = useState<RecentHousehold[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 1. Initial load of localStorage keys on mount
+  // 1. Initial load of persistent multi-layer storage on mount
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const storedFeeder = localStorage.getItem(STORAGE_KEYS.FEEDER_NAME) || "";
-    const storedHouseholdId = localStorage.getItem(STORAGE_KEYS.CURRENT_HOUSEHOLD_ID);
+    const storedFeeder = getStoredFeederName();
+    const storedHouseholdId = getStoredHouseholdId();
+    const recents = getRecentHouseholds();
 
     setFeederName(storedFeeder);
     setHouseholdId(storedHouseholdId);
+    setRecentHouseholds(recents);
 
     if (!storedHouseholdId) {
       setIsLoading(false);
@@ -55,7 +65,15 @@ export function useHousehold() {
         (docSnap) => {
           clearTimeout(safetyTimer);
           if (docSnap.exists()) {
-            setHousehold(docSnap.data() as Household);
+            const data = docSnap.data() as Household;
+            setHousehold(data);
+            saveStoredHouseholdId(data.id);
+            recordRecentHousehold({
+              id: data.id,
+              petName: data.petName,
+              petPhotoUrl: data.petPhotoUrl,
+            });
+            setRecentHouseholds(getRecentHouseholds());
             setError(null);
           } else {
             setError("Household not found.");
@@ -82,7 +100,15 @@ export function useHousehold() {
           const raw = localStorage.getItem(STORAGE_KEYS.MOCK_HOUSEHOLDS);
           const map: Record<string, Household> = raw ? JSON.parse(raw) : {};
           if (map[householdId]) {
-            setHousehold(map[householdId]);
+            const h = map[householdId];
+            setHousehold(h);
+            saveStoredHouseholdId(h.id);
+            recordRecentHousehold({
+              id: h.id,
+              petName: h.petName,
+              petPhotoUrl: h.petPhotoUrl,
+            });
+            setRecentHouseholds(getRecentHouseholds());
             setError(null);
           } else {
             setHousehold(null);
@@ -111,11 +137,11 @@ export function useHousehold() {
     }
   }, [householdId]);
 
-  // Save feeder name to localStorage
+  // Save feeder name to multi-layer storage
   const saveFeederName = useCallback((name: string) => {
     const trimmed = name.trim();
     if (!trimmed) return;
-    localStorage.setItem(STORAGE_KEYS.FEEDER_NAME, trimmed);
+    saveStoredFeederName(trimmed);
     setFeederName(trimmed);
   }, []);
 
@@ -153,7 +179,13 @@ export function useHousehold() {
           }
         }
 
-        localStorage.setItem(STORAGE_KEYS.CURRENT_HOUSEHOLD_ID, joinCode);
+        saveStoredHouseholdId(joinCode);
+        recordRecentHousehold({
+          id: joinCode,
+          petName: newHousehold.petName,
+          petPhotoUrl: newHousehold.petPhotoUrl,
+        });
+        setRecentHouseholds(getRecentHouseholds());
         setHouseholdId(joinCode);
         setHousehold(newHousehold);
         return newHousehold;
@@ -186,7 +218,13 @@ export function useHousehold() {
         }
 
         const data = docSnap.data() as Household;
-        localStorage.setItem(STORAGE_KEYS.CURRENT_HOUSEHOLD_ID, cleanCode);
+        saveStoredHouseholdId(cleanCode);
+        recordRecentHousehold({
+          id: cleanCode,
+          petName: data.petName,
+          petPhotoUrl: data.petPhotoUrl,
+        });
+        setRecentHouseholds(getRecentHouseholds());
         setHouseholdId(cleanCode);
         setHousehold(data);
         return data;
@@ -200,7 +238,13 @@ export function useHousehold() {
           throw new Error("No household found with this code in local storage. (Try creating one first!)");
         }
 
-        localStorage.setItem(STORAGE_KEYS.CURRENT_HOUSEHOLD_ID, cleanCode);
+        saveStoredHouseholdId(cleanCode);
+        recordRecentHousehold({
+          id: cleanCode,
+          petName: found.petName,
+          petPhotoUrl: found.petPhotoUrl,
+        });
+        setRecentHouseholds(getRecentHouseholds());
         setHouseholdId(cleanCode);
         setHousehold(found);
         return found;
@@ -215,9 +259,10 @@ export function useHousehold() {
 
   // Switch or leave household
   const leaveHousehold = useCallback(() => {
-    localStorage.removeItem(STORAGE_KEYS.CURRENT_HOUSEHOLD_ID);
+    clearStoredHouseholdId();
     setHouseholdId(null);
     setHousehold(null);
+    setRecentHouseholds(getRecentHouseholds());
   }, []);
 
   // Update pet profile (photo and/or name)
@@ -251,17 +296,25 @@ export function useHousehold() {
             }
           }
         }
+
+        recordRecentHousehold({
+          id: householdId,
+          petName: newName?.trim() || household?.petName || "Pet",
+          petPhotoUrl: newPhotoUrl?.trim() || household?.petPhotoUrl || "",
+        });
+        setRecentHouseholds(getRecentHouseholds());
       } catch (err: any) {
         console.error("Error updating pet profile:", err);
         throw err;
       }
     },
-    [householdId]
+    [householdId, household]
   );
 
   return {
     household,
     feederName,
+    recentHouseholds,
     isLoading,
     error,
     saveFeederName,

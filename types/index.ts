@@ -22,6 +22,13 @@ export interface Household {
   createdAt: number;
 }
 
+export interface RecentHousehold {
+  id: string;
+  petName: string;
+  petPhotoUrl: string;
+  lastSeen: number;
+}
+
 export interface FeederProfile {
   name: string;
   avatarSeed?: string;

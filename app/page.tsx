@@ -18,6 +18,7 @@ export default function Home() {
   const {
     household,
     feederName,
+    recentHouseholds,
     isLoading: isHouseholdLoading,
     isDemoMode,
     saveFeederName,
@@ -175,6 +176,7 @@ export default function Home() {
         isOpen={isOnboardingOpen}
         initialStep={onboardingStep}
         feederName={feederName}
+        recentHouseholds={recentHouseholds}
         onSaveFeederName={(name) => {
           saveFeederName(name);
           setIsOnboardingOpen(false);

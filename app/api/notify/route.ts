@@ -18,7 +18,7 @@ if (vapidPublicKey && vapidPrivateKey) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { householdId, petName, mealLabel, fedBy, time } = body;
+    const { householdId, petName, mealLabel, fedBy, time, isTest } = body;
 
     if (!householdId) {
       return NextResponse.json({ error: "Missing householdId" }, { status: 400 });
@@ -43,19 +43,21 @@ export async function POST(req: NextRequest) {
     }
 
     const payload = JSON.stringify({
-      title: `🔔 ${petName || "Kami"} had ${mealLabel || "a meal"}!`,
-      body: `${fedBy || "A roommate"} fed ${petName || "Kami"} at ${time || "just now"}.`,
-      icon: "/icon.svg",
-      badge: "/icon.svg",
+      title: isTest ? "🔔 Nomciu Push Test" : `🔔 ${petName || "Kami"} had ${mealLabel || "a meal"}!`,
+      body: isTest
+        ? "Push notifications are working perfectly on this device! 🐾"
+        : `${fedBy || "A roommate"} fed ${petName || "Kami"} at ${time || "just now"}.`,
+      icon: "/icon.png",
+      badge: "/icon.png",
       url: "/",
-      tag: `nomciu-feed-${Date.now()}`,
+      tag: isTest ? `nomciu-test-${Date.now()}` : `nomciu-feed-${Date.now()}`,
     });
 
     let sentCount = 0;
     const sendPromises = snapshot.docs.map(async (docSnap) => {
       const subData = docSnap.data();
-      // Don't send notification to the person who just fed the pet
-      if (subData.feederName && subData.feederName === fedBy) {
+      // Don't send notification to the person who just fed the pet (unless it's a test)
+      if (!isTest && subData.feederName && subData.feederName === fedBy) {
         return;
       }
 

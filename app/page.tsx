@@ -77,6 +77,29 @@ export default function Home() {
     }
   }, [household, feederName, isHouseholdLoading]);
 
+  const handleSendTestPush = async () => {
+    if (!household) return;
+    try {
+      const res = await fetch("/api/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          householdId: household.id,
+          petName: household.petName,
+          isTest: true,
+        }),
+      });
+      const data = await res.json();
+      if (data.sentCount > 0) {
+        alert("🔔 Test alert sent! Check your lock screen or notification center.");
+      } else {
+        alert("Notification dispatched. (If not received, make sure notifications are enabled in your device Settings).");
+      }
+    } catch (err) {
+      alert("Failed to send test push.");
+    }
+  };
+
   const handleSwitchHousehold = () => {
     leaveHousehold();
     setOnboardingStep("household");
@@ -110,6 +133,7 @@ export default function Home() {
             isDemoMode={isDemoMode}
             isPushSubscribed={isPushSubscribed}
             onTogglePush={isPushSubscribed ? undefined : subscribeToPush}
+            onSendTestPush={handleSendTestPush}
             onOpenInvite={() => setIsInviteOpen(true)}
             onSwitchHousehold={handleSwitchHousehold}
             onChangeNickname={() => {

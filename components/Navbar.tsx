@@ -13,6 +13,7 @@ interface NavbarProps {
   onSwitchHousehold: () => void;
   onChangeNickname: () => void;
   onTogglePush?: () => void;
+  onSendTestPush?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -24,6 +25,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSwitchHousehold,
   onChangeNickname,
   onTogglePush,
+  onSendTestPush,
 }) => {
   const [copied, setCopied] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -165,6 +167,19 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <span>Change Nickname</span>
                   </button>
+
+                  {onSendTestPush && isPushSubscribed && (
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        onSendTestPush();
+                      }}
+                      className="w-full px-3 py-2 rounded-xl text-left font-semibold text-amber-400 hover:text-amber-300 hover:bg-[#222636] transition flex items-center gap-2"
+                    >
+                      <Bell className="w-3.5 h-3.5" />
+                      <span>Send Test Alert</span>
+                    </button>
+                  )}
 
                   <button
                     onClick={() => {

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Utensils, CheckCircle2, ChevronDown, Sparkles, X, RotateCcw, Clock, User, Heart } from "lucide-react";
+import { Utensils, CheckCircle2, ChevronDown, Sparkles, X, RotateCcw, Clock, User, Flame } from "lucide-react";
 import { DailyMealLog, MealType } from "@/types";
 import { getCurrentTimeWindow, getNextPendingMeal } from "@/lib/utils";
 import { triggerFeedConfetti } from "./Confetti";
@@ -47,6 +47,15 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
   };
 
   const handleFeed = async (type: MealType) => {
+    // 1. Mobile Physical Haptic Feedback
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
+      try {
+        navigator.vibrate([40, 30, 60]);
+      } catch (e) {
+        // Haptics not supported or permitted
+      }
+    }
+
     setIsSubmitting(true);
     try {
       await onFeed(type);
@@ -72,61 +81,81 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto px-4 my-3">
-      {/* 1. If Current Time-Window Meal is NOT fed yet: Show Giant Tactile FEED NOW Button */}
+    <div className="w-full max-w-md mx-auto px-4 my-4">
+      {/* 1. If Current Time-Window Meal is NOT fed yet: Show Irresistible 3D BIG RED BUTTON */}
       {!isCurrentMealFed ? (
-        <div className="flex items-center gap-2">
-          <motion.button
-            onClick={() => handleFeed(windowInfo.currentMeal)}
-            disabled={isSubmitting}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            className="flex-1 h-18 py-3.5 rounded-2xl flex items-center justify-center gap-3 px-6 bg-gradient-to-r from-nomciu-peach to-orange-500 text-white font-black text-lg tracking-wide uppercase shadow-tactile transition-all select-none hover:brightness-105 active:shadow-tactile-active"
-          >
-            <Utensils className="w-7 h-7 stroke-[2.5]" />
-            <div className="flex flex-col items-start leading-tight text-left">
-              <span className="text-base sm:text-lg font-black tracking-wider flex items-center gap-1.5">
-                FEED {windowInfo.label.toUpperCase()} NOW {windowInfo.emoji}
-              </span>
-              <span className="text-[11px] font-medium tracking-normal text-white/90 normal-case">
-                {windowInfo.windowDescription}
-              </span>
-            </div>
-          </motion.button>
+        <div className="relative">
+          {/* Pulsing Tactical Halo Aura */}
+          <div className="absolute -inset-1.5 bg-gradient-to-r from-red-600/40 via-rose-500/30 to-orange-500/40 rounded-3xl blur-xl opacity-80 animate-pulse pointer-events-none" />
 
-          {/* Quick drawer button to feed another meal if needed */}
-          <motion.button
-            onClick={() => setIsModalOpen(true)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.92 }}
-            title="Choose a different meal"
-            className="h-18 py-3.5 w-14 rounded-2xl bg-white border-2 border-nomciu-border/70 hover:border-nomciu-peach/40 flex items-center justify-center text-nomciu-charcoal shadow-card active:shadow-sm transition"
-          >
-            <ChevronDown className="w-5 h-5 text-nomciu-charcoal/80" />
-          </motion.button>
+          {/* Mechanical Button Outer Chassis */}
+          <div className="relative rounded-3xl p-1 bg-gradient-to-b from-stone-200 to-stone-400 dark:from-stone-700 dark:to-stone-900 shadow-inner flex items-center gap-2">
+            
+            {/* The BIG RED BUTTON Cap */}
+            <motion.button
+              onClick={() => handleFeed(windowInfo.currentMeal)}
+              disabled={isSubmitting}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ y: 5, scale: 0.99 }}
+              transition={{ type: "spring", stiffness: 500, damping: 20 }}
+              className="relative flex-1 h-20 rounded-2xl bg-gradient-to-b from-red-500 via-rose-600 to-red-700 text-white font-black tracking-wide uppercase border-t border-red-300/40 border-b-[6px] border-red-900 active:border-b-[2px] shadow-[0_12px_24px_-4px_rgba(220,38,38,0.55),0_6px_12px_-2px_rgba(185,28,28,0.4)] active:shadow-[0_4px_12px_rgba(220,38,38,0.4)] transition-all flex items-center justify-between px-5 select-none overflow-hidden group"
+            >
+              {/* Glossy Candy Highlight Arc on top */}
+              <div className="absolute top-1.5 left-4 right-4 h-3.5 bg-gradient-to-b from-white/40 via-white/15 to-transparent rounded-full pointer-events-none" />
+
+              {/* Left Content: Badge + Giant Label */}
+              <div className="flex flex-col items-start leading-tight text-left z-10 py-1">
+                <span className="inline-flex items-center gap-1 text-[10px] font-black tracking-widest text-red-100 bg-red-900/40 px-2 py-0.5 rounded-full mb-1 border border-red-400/20">
+                  <Flame className="w-3 h-3 fill-amber-300 text-amber-300 animate-bounce" />
+                  PRESS TO FEED
+                </span>
+                <span className="text-lg sm:text-xl font-black tracking-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">
+                  FEED {windowInfo.label.toUpperCase()} NOW
+                </span>
+                <span className="text-[11px] font-semibold text-red-100/90 normal-case tracking-normal">
+                  {windowInfo.windowDescription}
+                </span>
+              </div>
+
+              {/* Right Big Emoji / Icon Badge */}
+              <div className="relative z-10 w-12 h-12 rounded-xl bg-white/20 border border-white/30 backdrop-blur-xs flex items-center justify-center text-3xl shadow-inner group-hover:scale-110 transition-transform">
+                {windowInfo.emoji}
+              </div>
+            </motion.button>
+
+            {/* Quick Meal Drawer Button */}
+            <motion.button
+              onClick={() => setIsModalOpen(true)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ y: 4, scale: 0.95 }}
+              title="Choose another meal"
+              className="h-20 w-12 rounded-2xl bg-white/90 dark:bg-stone-800 border-b-[5px] border-stone-400 dark:border-stone-950 active:border-b-[2px] flex items-center justify-center text-nomciu-charcoal shadow-sm transition active:shadow-none"
+            >
+              <ChevronDown className="w-5 h-5 text-nomciu-charcoal/80" />
+            </motion.button>
+          </div>
         </div>
       ) : (
-        /* 2. If Current Time-Window Meal IS ALREADY FED: Show Completed Status Card */
-        <div className="space-y-2.5">
+        /* 2. If Current Time-Window Meal IS ALREADY FED: Show Celebratory Status Card */
+        <div className="space-y-3">
           <motion.div
             initial={{ scale: 0.96, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="relative overflow-hidden rounded-2xl p-4.5 bg-gradient-to-br from-emerald-50 via-teal-50/60 to-white border-2 border-emerald-300/70 shadow-card"
+            className="relative overflow-hidden rounded-3xl p-5 bg-gradient-to-br from-emerald-50 via-teal-50/70 to-white border-2 border-emerald-300 shadow-card"
           >
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-100 border border-emerald-200 flex items-center justify-center text-2xl shadow-xs">
+              <div className="flex items-center gap-3.5">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-100 to-teal-100 border-2 border-emerald-200 flex items-center justify-center text-3xl shadow-xs">
                   {mealEmojis[windowInfo.currentMeal]}
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <h3 className="font-black text-emerald-950 text-base">
+                    <h3 className="font-black text-emerald-950 text-lg">
                       {windowInfo.label} Complete!
                     </h3>
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 stroke-[2.5]" />
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 stroke-[2.5]" />
                   </div>
-                  <div className="flex items-center gap-2 mt-0.5 text-xs text-emerald-800 font-semibold">
+                  <div className="flex items-center gap-2 mt-1 text-xs text-emerald-800 font-semibold">
                     <span className="flex items-center gap-1">
                       <Clock className="w-3.5 h-3.5 text-emerald-600" />
                       {currentMealItem.fedAt || "Just now"}
@@ -146,9 +175,9 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
                   whileTap={{ scale: 0.9 }}
                   onClick={() => handleUndo(windowInfo.currentMeal)}
                   title="Undo feeding"
-                  className="px-2.5 py-1.5 rounded-xl bg-white hover:bg-rose-50 text-emerald-800 hover:text-rose-600 text-xs font-bold flex items-center gap-1 border border-emerald-200 hover:border-rose-200 shadow-xs transition"
+                  className="px-3 py-1.5 rounded-xl bg-white hover:bg-rose-50 text-emerald-800 hover:text-rose-600 text-xs font-bold flex items-center gap-1 border border-emerald-200 hover:border-rose-200 shadow-xs transition active:scale-95"
                 >
-                  <RotateCcw className="w-3 h-3" />
+                  <RotateCcw className="w-3.5 h-3.5" />
                   <span>Undo</span>
                 </motion.button>
               )}
@@ -157,20 +186,20 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
 
           {/* Secondary Action: Next meal or All fed celebration */}
           {!isAllFed && nextPendingMeal ? (
-            <div className="flex items-center justify-between px-1">
+            <div className="flex items-center justify-between px-2">
               <span className="text-xs text-nomciu-muted font-medium">
-                Next up: {mealLabels[nextPendingMeal]} {mealEmojis[nextPendingMeal]}
+                Next up: <strong>{mealLabels[nextPendingMeal]} {mealEmojis[nextPendingMeal]}</strong>
               </span>
               <button
                 onClick={() => handleFeed(nextPendingMeal)}
-                className="text-xs font-bold text-nomciu-peach-dark hover:text-orange-600 underline underline-offset-2 transition"
+                className="text-xs font-bold text-rose-600 hover:text-red-700 underline underline-offset-4 transition"
               >
                 Feed {mealLabels[nextPendingMeal]} Early →
               </button>
             </div>
           ) : (
             <div className="text-center py-1">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100/70 text-emerald-800 font-bold text-xs">
+              <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold text-xs shadow-xs">
                 ✨ All 3 meals completed today!
               </span>
             </div>
@@ -199,7 +228,7 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
             >
               <div className="flex items-center justify-between pb-3 border-b border-nomciu-border/50 mb-3">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-nomciu-peach" />
+                  <Sparkles className="w-5 h-5 text-rose-500" />
                   <h3 className="font-extrabold text-lg text-nomciu-charcoal">
                     Which meal to log?
                   </h3>
@@ -240,10 +269,10 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
                       </div>
 
                       <span
-                        className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+                        className={`text-xs font-bold px-3 py-1 rounded-full ${
                           meal.completed
                             ? "bg-emerald-600 text-white"
-                            : "bg-nomciu-peach text-white"
+                            : "bg-rose-500 text-white"
                         }`}
                       >
                         {meal.completed ? "Re-log" : "Feed"}

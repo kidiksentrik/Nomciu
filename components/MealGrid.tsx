@@ -32,7 +32,7 @@ export const MealGrid: React.FC<MealGridProps> = ({
     <div className="w-full max-w-md mx-auto px-4 py-2">
       {/* Section Header */}
       <div className="flex items-center justify-between mb-2.5 px-1">
-        <div className="flex items-center gap-1.5 text-xs font-bold text-nomciu-charcoal/70 uppercase tracking-wider">
+        <div className="flex items-center gap-1.5 text-xs font-black text-stone-200 uppercase tracking-wider">
           <Calendar className="w-3.5 h-3.5 text-nomciu-peach" />
           <span>{todayLabel}</span>
         </div>
@@ -41,7 +41,7 @@ export const MealGrid: React.FC<MealGridProps> = ({
           {/* Toggle all meals schedule */}
           <button
             onClick={() => setShowAllCards((prev) => !prev)}
-            className="text-[11px] text-nomciu-muted hover:text-nomciu-charcoal font-semibold flex items-center gap-0.5 transition"
+            className="text-[11px] text-nomciu-muted hover:text-white font-bold flex items-center gap-0.5 transition"
           >
             <span>{showAllCards ? "Hide Schedule" : "All Meals"}</span>
             {showAllCards ? (
@@ -55,7 +55,7 @@ export const MealGrid: React.FC<MealGridProps> = ({
           <button
             onClick={onResetToday}
             title="Reset today's feeding records"
-            className="text-[11px] text-nomciu-muted hover:text-rose-500 font-medium flex items-center gap-1 transition"
+            className="text-[11px] text-nomciu-muted hover:text-rose-400 font-bold flex items-center gap-1 transition"
           >
             <RotateCcw className="w-3 h-3" />
             <span>Reset</span>
@@ -80,8 +80,8 @@ export const MealGrid: React.FC<MealGridProps> = ({
         <div>
           {completedMealTypes.length > 0 ? (
             <div className="space-y-2.5">
-              <div className="flex items-center gap-1.5 px-1 mb-1 text-[11px] font-bold text-nomciu-muted uppercase tracking-wider">
-                <History className="w-3 h-3 text-nomciu-sage-dark" />
+              <div className="flex items-center gap-1.5 px-1 mb-1.5 text-[11px] font-black text-emerald-400 uppercase tracking-wider">
+                <History className="w-3 h-3" />
                 <span>Today&apos;s Feedings ({completedMealTypes.length}/3)</span>
               </div>
               {completedMealTypes.map((type) => (
@@ -94,13 +94,13 @@ export const MealGrid: React.FC<MealGridProps> = ({
               ))}
             </div>
           ) : (
-            /* Nothing fed yet today -> Ultra-clean peaceful state! */
-            <div className="py-3 px-4 rounded-2xl bg-white/60 border border-nomciu-border/60 text-center">
-              <p className="text-xs text-nomciu-muted font-medium">
+            /* Nothing fed yet today -> Ultra-clean peaceful dark card */
+            <div className="py-4 px-4 rounded-2xl bg-[#161822] border border-[#252836] text-center shadow-lg">
+              <p className="text-xs text-stone-200 font-black">
                 No meals recorded yet today.
               </p>
-              <p className="text-[11px] text-nomciu-muted/80 mt-0.5">
-                Tap the button above as soon as you feed! 🥣
+              <p className="text-[11px] text-nomciu-muted mt-0.5">
+                Tap the big button above as soon as you feed! 🥣
               </p>
             </div>
           )}

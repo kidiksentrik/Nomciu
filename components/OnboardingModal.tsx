@@ -160,12 +160,12 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-nomciu-charcoal/50 backdrop-blur-sm overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm overflow-y-auto">
       <motion.div
         initial={{ scale: 0.93, opacity: 0, y: 10 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.93, opacity: 0, y: 10 }}
-        className="w-full max-w-md bg-white rounded-3xl p-6 shadow-2xl border border-nomciu-border my-6"
+        className="w-full max-w-md bg-[#161822] rounded-3xl p-6 shadow-2xl border border-[#282C3D] my-6 text-white"
       >
         <AnimatePresence mode="wait">
           {step === "household" ? (
@@ -177,10 +177,10 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
             >
               {/* Header */}
               <div className="text-center mb-5">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-nomciu-peach to-nomciu-amber mx-auto flex items-center justify-center text-2xl shadow-sm mb-2 select-none">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-nomciu-peach to-nomciu-amber mx-auto flex items-center justify-center text-2xl shadow-tactile mb-2 select-none">
                   🐾
                 </div>
-                <h2 className="text-xl font-black text-nomciu-charcoal">
+                <h2 className="text-xl font-black text-white">
                   Welcome to Nomciu
                 </h2>
                 <p className="text-xs text-nomciu-muted mt-1">
@@ -189,7 +189,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               </div>
 
               {/* Tabs: Create vs Join */}
-              <div className="flex bg-nomciu-cream/60 p-1 rounded-2xl mb-5 border border-nomciu-border/60">
+              <div className="flex bg-[#10121A] p-1 rounded-2xl mb-5 border border-[#252838]">
                 <button
                   type="button"
                   onClick={() => {
@@ -198,8 +198,8 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                   }}
                   className={`flex-1 py-2 rounded-xl text-xs font-bold transition ${
                     activeTab === "create"
-                      ? "bg-white text-nomciu-charcoal shadow-xs"
-                      : "text-nomciu-muted hover:text-nomciu-charcoal"
+                      ? "bg-[#1E212E] text-white shadow-xs border border-[#2E3347]"
+                      : "text-nomciu-muted hover:text-white"
                   }`}
                 >
                   Create Household
@@ -212,8 +212,8 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                   }}
                   className={`flex-1 py-2 rounded-xl text-xs font-bold transition ${
                     activeTab === "join"
-                      ? "bg-white text-nomciu-charcoal shadow-xs"
-                      : "text-nomciu-muted hover:text-nomciu-charcoal"
+                      ? "bg-[#1E212E] text-white shadow-xs border border-[#2E3347]"
+                      : "text-nomciu-muted hover:text-white"
                   }`}
                 >
                   Join with Code
@@ -221,7 +221,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               </div>
 
               {errorMsg && (
-                <div className="mb-4 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium text-center">
+                <div className="mb-4 p-2.5 rounded-xl bg-rose-950/60 border border-rose-500/50 text-rose-300 text-xs font-bold text-center">
                   {errorMsg}
                 </div>
               )}
@@ -230,7 +230,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               {activeTab === "create" && (
                 <form onSubmit={handleCreateSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-bold text-nomciu-charcoal mb-1">
+                    <label className="block text-xs font-bold text-stone-200 mb-1">
                       Pet&apos;s Name
                     </label>
                     <input
@@ -238,13 +238,13 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                       value={petName}
                       onChange={(e) => setPetName(e.target.value)}
                       placeholder="e.g. Luna, Mochi, Oliver"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-nomciu-cream/40 border border-nomciu-border focus:bg-white focus:outline-none focus:ring-2 focus:ring-nomciu-peach text-sm font-semibold"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#10121A] border border-[#282C3D] focus:bg-[#181A24] focus:outline-none focus:ring-2 focus:ring-nomciu-peach text-sm font-semibold text-white"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-nomciu-charcoal mb-2">
+                    <label className="block text-xs font-bold text-stone-200 mb-2">
                       Select or Upload Pet Photo
                     </label>
 
@@ -262,8 +262,8 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                             }}
                             className={`relative aspect-square rounded-xl overflow-hidden border-2 transition ${
                               isSelected
-                                ? "border-nomciu-peach scale-105 shadow-sm"
-                                : "border-transparent opacity-70 hover:opacity-100"
+                                ? "border-nomciu-peach scale-105 shadow-md"
+                                : "border-transparent opacity-60 hover:opacity-100"
                             }`}
                           >
                             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -273,7 +273,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                               className="w-full h-full object-cover"
                             />
                             {isSelected && (
-                              <div className="absolute inset-0 bg-nomciu-peach/20 flex items-center justify-center">
+                              <div className="absolute inset-0 bg-nomciu-peach/30 flex items-center justify-center">
                                 <Check className="w-3.5 h-3.5 text-white stroke-[3]" />
                               </div>
                             )}
@@ -284,7 +284,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
                     {/* Custom upload or custom URL input */}
                     <div className="flex items-center gap-2">
-                      <label className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-nomciu-cream/50 hover:bg-nomciu-cream border border-nomciu-border text-xs font-bold text-nomciu-charcoal cursor-pointer transition">
+                      <label className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-[#1C1F2B] hover:bg-[#242836] border border-[#2D3244] text-xs font-bold text-stone-200 cursor-pointer transition">
                         <Camera className="w-3.5 h-3.5 text-nomciu-peach" />
                         <span>Upload Custom Photo</span>
                         <input
@@ -300,7 +300,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3 rounded-2xl bg-gradient-to-r from-nomciu-peach to-orange-500 hover:brightness-105 text-white font-extrabold text-sm shadow-tactile transition active:scale-98 disabled:opacity-50"
+                    className="w-full py-3 rounded-2xl bg-gradient-to-r from-nomciu-peach to-orange-500 hover:brightness-105 text-white font-black text-sm shadow-tactile transition active:scale-98 disabled:opacity-50"
                   >
                     {loading ? "Creating..." : "Create Household"}
                   </button>
@@ -311,7 +311,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               {activeTab === "join" && (
                 <form onSubmit={handleJoinSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-bold text-nomciu-charcoal mb-1">
+                    <label className="block text-xs font-bold text-stone-200 mb-1">
                       Enter 6-Digit Join Code
                     </label>
                     <div className="relative">
@@ -322,7 +322,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                         value={joinCodeInput}
                         onChange={(e) => setJoinCodeInput(e.target.value.toUpperCase())}
                         placeholder="e.g. 749201"
-                        className="w-full pl-11 pr-4 py-3 rounded-xl bg-nomciu-cream/40 border border-nomciu-border focus:bg-white focus:outline-none focus:ring-2 focus:ring-nomciu-peach text-center tracking-widest font-mono text-lg font-black uppercase"
+                        className="w-full pl-11 pr-4 py-3 rounded-xl bg-[#10121A] border border-[#282C3D] focus:bg-[#181A24] focus:outline-none focus:ring-2 focus:ring-nomciu-peach text-center tracking-widest font-mono text-lg font-black uppercase text-white"
                         required
                       />
                     </div>
@@ -334,7 +334,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:brightness-105 text-white font-extrabold text-sm shadow-sm transition active:scale-98 disabled:opacity-50"
+                    className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:brightness-105 text-white font-black text-sm shadow-sm transition active:scale-98 disabled:opacity-50"
                   >
                     {loading ? "Joining..." : "Join Household"}
                   </button>
@@ -350,10 +350,10 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               exit={{ opacity: 0, x: -10 }}
             >
               <div className="text-center mb-5">
-                <div className="w-12 h-12 rounded-2xl bg-nomciu-peach-light text-nomciu-peach mx-auto flex items-center justify-center text-2xl shadow-sm mb-2 select-none">
+                <div className="w-12 h-12 rounded-2xl bg-[#2D1822] text-nomciu-peach mx-auto flex items-center justify-center text-2xl shadow-sm mb-2 select-none border border-nomciu-peach/30">
                   👤
                 </div>
-                <h2 className="text-xl font-black text-nomciu-charcoal">
+                <h2 className="text-xl font-black text-white">
                   What&apos;s your nickname?
                 </h2>
                 <p className="text-xs text-nomciu-muted mt-1">
@@ -362,7 +362,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               </div>
 
               {errorMsg && (
-                <div className="mb-4 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium text-center">
+                <div className="mb-4 p-2.5 rounded-xl bg-rose-950/60 border border-rose-500/50 text-rose-300 text-xs font-bold text-center">
                   {errorMsg}
                 </div>
               )}
@@ -375,7 +375,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                     onChange={(e) => setNickname(e.target.value)}
                     placeholder="e.g. Alex, Sam, Chloe"
                     maxLength={20}
-                    className="w-full px-4 py-3 rounded-xl bg-nomciu-cream/40 border border-nomciu-border focus:bg-white focus:outline-none focus:ring-2 focus:ring-nomciu-peach text-center text-base font-bold"
+                    className="w-full px-4 py-3 rounded-xl bg-[#10121A] border border-[#282C3D] focus:bg-[#181A24] focus:outline-none focus:ring-2 focus:ring-nomciu-peach text-center text-base font-black text-white"
                     autoFocus
                     required
                   />
@@ -386,7 +386,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-nomciu-peach to-orange-500 hover:brightness-105 text-white font-extrabold text-sm shadow-tactile transition active:scale-98 flex items-center justify-center gap-2"
+                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-nomciu-peach to-orange-500 hover:brightness-105 text-white font-black text-sm shadow-tactile transition active:scale-98 flex items-center justify-center gap-2"
                 >
                   <span>Start Tracking</span>
                   <ArrowRight className="w-4 h-4" />

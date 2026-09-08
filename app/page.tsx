@@ -82,11 +82,11 @@ export default function Home() {
   // Loading state
   if (isHouseholdLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-nomciu-bg">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-nomciu-peach to-nomciu-amber flex items-center justify-center text-3xl shadow-tactile animate-pulse mb-4 select-none">
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#0D0E13]">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-nomciu-peach to-amber-500 flex items-center justify-center text-3xl shadow-tactile animate-pulse mb-4 select-none">
           🐾
         </div>
-        <div className="flex items-center gap-2 text-nomciu-charcoal font-bold text-sm">
+        <div className="flex items-center gap-2 text-stone-200 font-black text-sm">
           <Loader2 className="w-4 h-4 animate-spin text-nomciu-peach" />
           <span>Waking up Nomciu...</span>
         </div>
@@ -95,9 +95,9 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen flex flex-col justify-between safe-top safe-bottom">
+    <main className="min-h-screen flex flex-col justify-between safe-top safe-bottom bg-[#0D0E13] text-stone-100 overflow-x-hidden">
       {/* Mobile-contained wrapper (Looks like native app on mobile & elegant mobile card on desktop) */}
-      <div className="w-full max-w-md mx-auto flex-1 flex flex-col justify-between pb-6">
+      <div className="w-full max-w-md mx-auto flex-1 flex flex-col justify-between pb-6 overflow-x-hidden">
         <div>
           {/* Top Bar */}
           <Navbar
@@ -157,10 +157,10 @@ export default function Home() {
 
         {/* Footer info & Roommate prompt */}
         <footer className="w-full text-center px-4 mt-6">
-          <p className="text-[11px] text-nomciu-muted font-medium">
+          <p className="text-[11px] text-stone-400 font-semibold">
             Roommates sync automatically in real-time.
           </p>
-          <p className="text-[10px] text-nomciu-muted/70 mt-0.5">
+          <p className="text-[10px] text-stone-500 font-medium mt-0.5">
             Nomciu • Mobile Pet Feeding Tracker
           </p>
         </footer>

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: "Nomciu",
   },
   icons: {
@@ -21,7 +21,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#FAF6F0",
+  themeColor: "#0D0E13",
 };
 
 export default function RootLayout({
@@ -30,8 +30,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="bg-nomciu-bg text-nomciu-charcoal min-h-screen flex flex-col font-sans selection:bg-nomciu-peach-light selection:text-nomciu-peach-dark">
+    <html lang="en" className="dark">
+      <body className="bg-nomciu-bg text-nomciu-charcoal min-h-screen flex flex-col font-sans overflow-x-hidden selection:bg-nomciu-peach/30 selection:text-nomciu-peach">
         {children}
       </body>
     </html>

@@ -32,20 +32,20 @@ export const PetHero: React.FC<PetHeroProps> = ({
   ].filter(Boolean).length;
 
   return (
-    <div className="w-full max-w-md mx-auto px-4 pt-3 pb-2 flex flex-col items-center text-center">
-      {/* Pet Avatar Container with Warm Radial Aura */}
+    <div className="w-full max-w-md mx-auto px-4 pt-2 pb-2 flex flex-col items-center text-center">
+      {/* Pet Avatar Container with Radiant Ambient Aura */}
       <div className="relative mb-3 group">
-        {/* Decorative soft glow */}
-        <div className="absolute -inset-2.5 bg-gradient-to-r from-red-500/20 via-nomciu-peach/25 to-amber-500/20 rounded-full blur-xl opacity-75 group-hover:opacity-100 transition duration-500" />
+        {/* Neon soft ambient glow */}
+        <div className="absolute -inset-3 bg-gradient-to-r from-rose-500/30 via-orange-500/25 to-amber-500/30 rounded-full blur-2xl opacity-85 group-hover:opacity-100 transition duration-500 pointer-events-none" />
 
         {/* Avatar Ring */}
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", stiffness: 260, damping: 20 }}
-          className="relative w-36 h-36 sm:w-40 sm:h-40 rounded-full p-1.5 bg-gradient-to-tr from-rose-500 via-orange-400 to-amber-300 shadow-card"
+          className="relative w-36 h-36 sm:w-40 sm:h-40 rounded-full p-1 bg-gradient-to-tr from-rose-500 via-orange-400 to-amber-400 shadow-2xl"
         >
-          <div className="w-full h-full rounded-full overflow-hidden bg-white relative border-2 border-white shadow-inner flex items-center justify-center">
+          <div className="w-full h-full rounded-full overflow-hidden bg-[#161822] relative border-2 border-[#252836] shadow-inner flex items-center justify-center">
             {petPhotoUrl && !imgError ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -55,9 +55,9 @@ export const PetHero: React.FC<PetHeroProps> = ({
                 className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
               />
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 text-nomciu-charcoal select-none">
-                <span className="text-5xl drop-shadow-xs">🐱</span>
-                <span className="text-[10px] font-bold text-nomciu-muted mt-1 uppercase tracking-wider">
+              <div className="w-full h-full flex flex-col items-center justify-center bg-[#181A24] text-stone-200 select-none">
+                <span className="text-5xl drop-shadow-md">🐱</span>
+                <span className="text-[10px] font-black text-nomciu-muted mt-1 uppercase tracking-wider">
                   {petName}
                 </span>
               </div>
@@ -70,7 +70,7 @@ export const PetHero: React.FC<PetHeroProps> = ({
             initial={{ scale: 0, rotate: -20 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ type: "spring", stiffness: 350, damping: 15 }}
-            className="absolute -bottom-1 -right-1 w-11 h-11 rounded-full bg-white shadow-md border border-nomciu-border flex items-center justify-center text-2xl select-none"
+            className="absolute -bottom-1 -right-1 w-11 h-11 rounded-full bg-[#181A24] shadow-xl border border-[#2D3142] flex items-center justify-center text-2xl select-none"
           >
             {status.emoji}
           </motion.div>
@@ -79,13 +79,13 @@ export const PetHero: React.FC<PetHeroProps> = ({
 
       {/* Pet Name */}
       <div className="flex items-center gap-1.5 mb-1">
-        <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-nomciu-charcoal">
+        <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-sm">
           {petName}
         </h2>
         <Heart className="w-5 h-5 text-rose-500 fill-rose-500 drop-shadow-xs" />
       </div>
 
-      {/* Dynamic Status Headline */}
+      {/* Dynamic Status Headline with High Contrast */}
       <AnimatePresence mode="wait">
         <motion.div
           key={status.headline}
@@ -96,10 +96,10 @@ export const PetHero: React.FC<PetHeroProps> = ({
           className="px-3"
         >
           <p
-            className={`text-base sm:text-lg font-extrabold tracking-tight ${
+            className={`text-base sm:text-lg font-black tracking-tight ${
               status.isAllCompleted
-                ? "text-emerald-700"
-                : "text-nomciu-charcoal/90"
+                ? "text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.3)]"
+                : "text-stone-100"
             }`}
           >
             {status.headline}
@@ -107,8 +107,8 @@ export const PetHero: React.FC<PetHeroProps> = ({
         </motion.div>
       </AnimatePresence>
 
-      {/* Daily Progress Indicator (3 Soft Pills) */}
-      <div className="flex items-center gap-2 mt-2">
+      {/* Daily Progress Indicator (3 Dark Pills with Neon Glow) */}
+      <div className="flex items-center gap-2 mt-2.5">
         {[
           { label: "B", completed: dailyLog.breakfast.completed },
           { label: "L", completed: dailyLog.lunch.completed },
@@ -118,13 +118,13 @@ export const PetHero: React.FC<PetHeroProps> = ({
             <div
               className={`h-2 rounded-full transition-all duration-300 ${
                 item.completed
-                  ? "w-8 bg-emerald-500 shadow-sm"
-                  : "w-4 bg-nomciu-border"
+                  ? "w-8 bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.6)]"
+                  : "w-4 bg-[#252836]"
               }`}
             />
           </div>
         ))}
-        <span className="text-xs font-semibold text-nomciu-muted ml-1">
+        <span className="text-xs font-bold text-stone-300 ml-1">
           {completedMeals}/3 Fed
         </span>
       </div>

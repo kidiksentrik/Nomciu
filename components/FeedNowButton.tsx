@@ -86,12 +86,11 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
       {!isCurrentMealFed ? (
         <div className="relative">
           {/* Pulsing Tactical Halo Aura */}
-          <div className="absolute -inset-1.5 bg-gradient-to-r from-red-600/40 via-rose-500/30 to-orange-500/40 rounded-3xl blur-xl opacity-80 animate-pulse pointer-events-none" />
+          <div className="absolute -inset-2 bg-gradient-to-r from-red-600/40 via-rose-500/35 to-orange-500/40 rounded-3xl blur-2xl opacity-90 animate-pulse pointer-events-none" />
 
-          {/* Mechanical Button Outer Chassis */}
+          {/* Mechanical Button Outer Chassis (Dark Brushed Titanium) */}
           <div
-            style={{ colorScheme: "light" }}
-            className="big-red-chassis relative rounded-3xl p-1.5 bg-gradient-to-b from-stone-200 to-stone-400 dark:from-stone-700 dark:to-stone-900 shadow-inner flex items-stretch gap-2.5"
+            className="big-red-chassis relative rounded-3xl p-1.5 bg-gradient-to-b from-[#232736] via-[#1A1C26] to-[#12141C] border border-[#2E3347] shadow-[inset_0_1px_2px_rgba(255,255,255,0.15),0_12px_32px_rgba(0,0,0,0.6)] flex items-stretch gap-2.5"
           >
             {/* The BIG RED BUTTON Cap */}
             <motion.button
@@ -130,10 +129,9 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
               whileHover={{ scale: 1.04 }}
               whileTap={{ y: 5, scale: 0.95 }}
               title="Choose another meal"
-              style={{ colorScheme: "light" }}
-              className="h-28 sm:h-32 w-13 sm:w-14 rounded-2xl bg-white/95 dark:bg-stone-800 border-b-[8px] border-stone-400 dark:border-stone-950 active:border-b-[2px] flex items-center justify-center text-stone-800 dark:text-stone-100 shadow-md transition active:shadow-none"
+              className="h-28 sm:h-32 w-13 sm:w-14 rounded-2xl bg-[#1C1F2B] border border-[#2D3244] border-b-[8px] border-[#10121A] active:border-b-[2px] flex items-center justify-center text-stone-200 shadow-md transition active:shadow-none"
             >
-              <ChevronDown className="w-6 h-6 text-stone-700 dark:text-stone-200 stroke-[2.5]" />
+              <ChevronDown className="w-6 h-6 text-stone-300 stroke-[2.5]" />
             </motion.button>
           </div>
         </div>
@@ -143,29 +141,29 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
           <motion.div
             initial={{ scale: 0.96, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="relative overflow-hidden rounded-3xl p-5 bg-gradient-to-br from-emerald-50 via-teal-50/70 to-white border-2 border-emerald-300 shadow-card"
+            className="relative overflow-hidden rounded-3xl p-5 bg-gradient-to-br from-[#0F221B] via-[#122A21] to-[#0D1C16] border-2 border-emerald-500/50 shadow-2xl"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3.5">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-100 to-teal-100 border-2 border-emerald-200 flex items-center justify-center text-3xl shadow-xs">
+                <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 border-2 border-emerald-400/40 flex items-center justify-center text-3xl shadow-xs">
                   {mealEmojis[windowInfo.currentMeal]}
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <h3 className="font-black text-emerald-950 text-lg">
+                    <h3 className="font-black text-white text-lg drop-shadow-sm">
                       {windowInfo.label} Complete!
                     </h3>
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 stroke-[2.5]" />
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400 stroke-[2.5]" />
                   </div>
-                  <div className="flex items-center gap-2 mt-1 text-xs text-emerald-800 font-semibold">
+                  <div className="flex items-center gap-2 mt-1 text-xs text-emerald-300 font-semibold">
                     <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-emerald-600" />
+                      <Clock className="w-3.5 h-3.5 text-emerald-400" />
                       {currentMealItem.fedAt || "Just now"}
                     </span>
                     <span>•</span>
                     <span className="flex items-center gap-1">
-                      <User className="w-3.5 h-3.5 text-emerald-600" />
-                      Fed by <strong>{currentMealItem.fedBy || "Roommate"}</strong>
+                      <User className="w-3.5 h-3.5 text-emerald-400" />
+                      Fed by <strong className="text-white">{currentMealItem.fedBy || "Roommate"}</strong>
                     </span>
                   </div>
                 </div>
@@ -177,7 +175,7 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
                   whileTap={{ scale: 0.9 }}
                   onClick={() => handleUndo(windowInfo.currentMeal)}
                   title="Undo feeding"
-                  className="px-3 py-1.5 rounded-xl bg-white hover:bg-rose-50 text-emerald-800 hover:text-rose-600 text-xs font-bold flex items-center gap-1 border border-emerald-200 hover:border-rose-200 shadow-xs transition active:scale-95"
+                  className="px-3 py-1.5 rounded-xl bg-[#17362B] hover:bg-rose-950/60 text-emerald-300 hover:text-rose-300 text-xs font-bold flex items-center gap-1 border border-emerald-500/40 hover:border-rose-500/40 shadow-xs transition active:scale-95"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>Undo</span>
@@ -190,18 +188,18 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
           {!isAllFed && nextPendingMeal ? (
             <div className="flex items-center justify-between px-2">
               <span className="text-xs text-nomciu-muted font-medium">
-                Next up: <strong>{mealLabels[nextPendingMeal]} {mealEmojis[nextPendingMeal]}</strong>
+                Next up: <strong className="text-white">{mealLabels[nextPendingMeal]} {mealEmojis[nextPendingMeal]}</strong>
               </span>
               <button
                 onClick={() => handleFeed(nextPendingMeal)}
-                className="text-xs font-bold text-rose-600 hover:text-red-700 underline underline-offset-4 transition"
+                className="text-xs font-bold text-rose-400 hover:text-rose-300 underline underline-offset-4 transition"
               >
                 Feed {mealLabels[nextPendingMeal]} Early →
               </button>
             </div>
           ) : (
             <div className="text-center py-1">
-              <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold text-xs shadow-xs">
+              <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 font-black text-xs shadow-xs">
                 ✨ All 3 meals completed today!
               </span>
             </div>
@@ -218,7 +216,7 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsModalOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-xs"
+              className="fixed inset-0 bg-black/70 backdrop-blur-xs"
             />
 
             <motion.div
@@ -226,18 +224,18 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: "100%", opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 250 }}
-              className="relative w-full max-w-sm bg-white rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl z-10 border border-nomciu-border"
+              className="relative w-full max-w-sm bg-[#161822] rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl z-10 border border-[#282C3D]"
             >
-              <div className="flex items-center justify-between pb-3 border-b border-nomciu-border/50 mb-3">
+              <div className="flex items-center justify-between pb-3 border-b border-[#282C3D] mb-3">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-rose-500" />
-                  <h3 className="font-extrabold text-lg text-nomciu-charcoal">
+                  <Sparkles className="w-5 h-5 text-rose-400" />
+                  <h3 className="font-extrabold text-lg text-white">
                     Which meal to log?
                   </h3>
                 </div>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="p-1 rounded-full text-nomciu-muted hover:text-nomciu-charcoal hover:bg-nomciu-cream/50 transition"
+                  className="p-1 rounded-full text-nomciu-muted hover:text-white hover:bg-[#202330] transition"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -252,14 +250,14 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
                       onClick={() => handleFeed(type)}
                       className={`w-full p-3.5 rounded-2xl flex items-center justify-between border text-left transition active:scale-98 ${
                         meal.completed
-                          ? "bg-emerald-50/70 border-emerald-200 text-emerald-900"
-                          : "bg-nomciu-cream/40 hover:bg-nomciu-cream/80 border-nomciu-border/70 text-nomciu-charcoal"
+                          ? "bg-emerald-950/50 border-emerald-500/40 text-emerald-200"
+                          : "bg-[#1C1E28] hover:bg-[#222533] border-[#2A2E3E] text-stone-200"
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-xl">{mealEmojis[type]}</span>
                         <div>
-                          <div className="font-bold capitalize text-sm">
+                          <div className="font-bold capitalize text-sm text-white">
                             {type}
                           </div>
                           <div className="text-xs text-nomciu-muted">
@@ -285,7 +283,7 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
               </div>
 
               <p className="text-center text-[11px] text-nomciu-muted mt-4">
-                Logging as <strong className="text-nomciu-charcoal">{feederName || "Roommate"}</strong>
+                Logging as <strong className="text-white">{feederName || "Roommate"}</strong>
               </p>
             </motion.div>
           </div>

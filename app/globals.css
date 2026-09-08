@@ -41,3 +41,15 @@ body {
 .safe-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
+
+/* Big Red Button Protection against Dark Mode / Dark Reader Inversion */
+.big-red-button {
+  color-scheme: light !important;
+  background: linear-gradient(180deg, #FF385C 0%, #E11D48 45%, #9F1239 100%) !important;
+  color: #FFFFFF !important;
+}
+
+.big-red-chassis {
+  color-scheme: light !important;
+}
+

@@ -89,36 +89,46 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
           <div className="absolute -inset-1.5 bg-gradient-to-r from-red-600/40 via-rose-500/30 to-orange-500/40 rounded-3xl blur-xl opacity-80 animate-pulse pointer-events-none" />
 
           {/* Mechanical Button Outer Chassis */}
-          <div className="relative rounded-3xl p-1 bg-gradient-to-b from-stone-200 to-stone-400 dark:from-stone-700 dark:to-stone-900 shadow-inner flex items-center gap-2">
-            
+          <div
+            style={{ colorScheme: "light" }}
+            className="big-red-chassis relative rounded-3xl p-1.5 bg-gradient-to-b from-stone-200 to-stone-400 dark:from-stone-700 dark:to-stone-900 shadow-inner flex items-stretch gap-2.5"
+          >
             {/* The BIG RED BUTTON Cap */}
             <motion.button
               onClick={() => handleFeed(windowInfo.currentMeal)}
               disabled={isSubmitting}
               whileHover={{ scale: 1.01 }}
-              whileTap={{ y: 5, scale: 0.99 }}
+              whileTap={{ y: 6, scale: 0.98 }}
               transition={{ type: "spring", stiffness: 500, damping: 20 }}
-              className="relative flex-1 h-20 rounded-2xl bg-gradient-to-b from-red-500 via-rose-600 to-red-700 text-white font-black tracking-wide uppercase border-t border-red-300/40 border-b-[6px] border-red-900 active:border-b-[2px] shadow-[0_12px_24px_-4px_rgba(220,38,38,0.55),0_6px_12px_-2px_rgba(185,28,28,0.4)] active:shadow-[0_4px_12px_rgba(220,38,38,0.4)] transition-all flex items-center justify-between px-5 select-none overflow-hidden group"
+              style={{
+                colorScheme: "light",
+                background: "linear-gradient(180deg, #FF2A55 0%, #E11D48 45%, #9F1239 100%)",
+                color: "#FFFFFF",
+              }}
+              className="big-red-button relative flex-1 h-28 sm:h-32 rounded-2xl text-white font-black tracking-wide uppercase border-t border-red-300/60 border-b-[8px] border-[#7F1D1D] active:border-b-[2px] shadow-[0_16px_32px_-4px_rgba(225,29,72,0.6),0_8px_16px_-2px_rgba(159,18,57,0.5)] active:shadow-[0_4px_12px_rgba(225,29,72,0.4)] transition-all flex items-center justify-between px-6 select-none overflow-hidden group"
             >
               {/* Glossy Candy Highlight Arc on top */}
-              <div className="absolute top-1.5 left-4 right-4 h-3.5 bg-gradient-to-b from-white/40 via-white/15 to-transparent rounded-full pointer-events-none" />
+              <div className="absolute top-1.5 left-4 right-4 h-5 bg-gradient-to-b from-white/45 via-white/15 to-transparent rounded-full pointer-events-none" />
+
+              {/* Radiant Center Glow */}
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.25),transparent_65%)] pointer-events-none" />
 
               {/* Left Content: Badge + Giant Label */}
-              <div className="flex flex-col items-start leading-tight text-left z-10 py-1">
-                <span className="inline-flex items-center gap-1 text-[10px] font-black tracking-widest text-red-100 bg-red-900/40 px-2 py-0.5 rounded-full mb-1 border border-red-400/20">
-                  <Flame className="w-3 h-3 fill-amber-300 text-amber-300 animate-bounce" />
+              <div className="flex flex-col items-start leading-tight text-left z-10 py-2">
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-black tracking-widest text-white bg-black/25 px-2.5 py-1 rounded-full mb-1.5 border border-white/20 shadow-xs">
+                  <Flame className="w-3.5 h-3.5 fill-amber-300 text-amber-300 animate-bounce" />
                   PRESS TO FEED
                 </span>
-                <span className="text-lg sm:text-xl font-black tracking-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">
+                <span className="text-xl sm:text-2xl font-black tracking-tight text-white drop-shadow-[0_2px_5px_rgba(0,0,0,0.6)]">
                   FEED {windowInfo.label.toUpperCase()} NOW
                 </span>
-                <span className="text-[11px] font-semibold text-red-100/90 normal-case tracking-normal">
+                <span className="text-xs sm:text-sm font-bold text-red-100/95 normal-case tracking-normal mt-1 drop-shadow-xs">
                   {windowInfo.windowDescription}
                 </span>
               </div>
 
               {/* Right Big Emoji / Icon Badge */}
-              <div className="relative z-10 w-12 h-12 rounded-xl bg-white/20 border border-white/30 backdrop-blur-xs flex items-center justify-center text-3xl shadow-inner group-hover:scale-110 transition-transform">
+              <div className="relative z-10 w-16 h-16 rounded-2xl bg-white/25 border-2 border-white/40 backdrop-blur-xs flex items-center justify-center text-4xl shadow-inner group-hover:scale-110 transition-transform">
                 {windowInfo.emoji}
               </div>
             </motion.button>
@@ -126,12 +136,13 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
             {/* Quick Meal Drawer Button */}
             <motion.button
               onClick={() => setIsModalOpen(true)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ y: 4, scale: 0.95 }}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ y: 5, scale: 0.95 }}
               title="Choose another meal"
-              className="h-20 w-12 rounded-2xl bg-white/90 dark:bg-stone-800 border-b-[5px] border-stone-400 dark:border-stone-950 active:border-b-[2px] flex items-center justify-center text-nomciu-charcoal shadow-sm transition active:shadow-none"
+              style={{ colorScheme: "light" }}
+              className="h-28 sm:h-32 w-13 sm:w-14 rounded-2xl bg-white/95 dark:bg-stone-800 border-b-[8px] border-stone-400 dark:border-stone-950 active:border-b-[2px] flex items-center justify-center text-stone-800 dark:text-stone-100 shadow-md transition active:shadow-none"
             >
-              <ChevronDown className="w-5 h-5 text-nomciu-charcoal/80" />
+              <ChevronDown className="w-6 h-6 text-stone-700 dark:text-stone-200 stroke-[2.5]" />
             </motion.button>
           </div>
         </div>

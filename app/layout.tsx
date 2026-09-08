@@ -2,13 +2,13 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Nomciu - Pet Feeding Tracker",
+  title: "Feedy - Pet Feeding Tracker",
   description: "Sleek, minimal, mobile-first Pet Feeding Tracker PWA for roommates and families",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Nomciu",
+    title: "Feedy",
   },
   icons: {
     icon: "/icon.png",

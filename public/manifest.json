@@ -1,6 +1,6 @@
 {
-  "name": "Nomciu - Pet Feeding Tracker",
-  "short_name": "Nomciu",
+  "name": "Feedy - Pet Feeding Tracker",
+  "short_name": "Feedy",
   "description": "Sleek, minimal, mobile-first Pet Feeding Tracker PWA for roommates and families",
   "start_url": "/",
   "display": "standalone",

@@ -43,14 +43,14 @@ export async function POST(req: NextRequest) {
     }
 
     const payload = JSON.stringify({
-      title: isTest ? "🔔 Nomciu Push Test" : `🔔 ${petName || "Kami"} had ${mealLabel || "a meal"}!`,
+      title: isTest ? "🔔 Feedy Push Test" : `🔔 ${petName || "Kami"} had ${mealLabel || "a meal"}!`,
       body: isTest
         ? "Push notifications are working perfectly on this device! 🐾"
         : `${fedBy || "A roommate"} fed ${petName || "Kami"} at ${time || "just now"}.`,
       icon: "/icon.png",
       badge: "/icon.png",
       url: "/",
-      tag: isTest ? `nomciu-test-${Date.now()}` : `nomciu-feed-${Date.now()}`,
+      tag: isTest ? `feedy-test-${Date.now()}` : `feedy-feed-${Date.now()}`,
     });
 
     let sentCount = 0;

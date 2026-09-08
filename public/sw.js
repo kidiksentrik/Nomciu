@@ -1,16 +1,16 @@
-// Nomciu Service Worker for Background Push Notifications
+// Feedy Service Worker for Background Push Notifications
 self.addEventListener("push", (event) => {
   if (!event.data) return;
 
   try {
     const data = event.data.json();
-    const title = data.title || "Nomciu Alert! 🐾";
+    const title = data.title || "Feedy Alert! 🐾";
     const options = {
       body: data.body || "Someone fed your pet!",
-      icon: data.icon || "/icon.svg",
-      badge: "/icon.svg",
+      icon: data.icon || "/icon.png",
+      badge: "/icon.png",
       vibrate: [200, 100, 200],
-      tag: data.tag || "nomciu-feed",
+      tag: data.tag || "feedy-feed",
       data: {
         url: data.url || "/",
       },

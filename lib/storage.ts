@@ -1,16 +1,22 @@
 import { RecentHousehold } from "@/types";
 
 const COOKIE_KEYS = {
-  CURRENT_HOUSEHOLD_ID: "nomciu_current_household_id",
-  FEEDER_NAME: "nomciu_feeder_name",
-  LAST_HOUSEHOLD: "nomciu_last_household",
+  CURRENT_HOUSEHOLD_ID: "feedy_current_household_id",
+  FEEDER_NAME: "feedy_feeder_name",
+  LAST_HOUSEHOLD: "feedy_last_household",
+  LEGACY_HOUSEHOLD_ID: "nomciu_current_household_id",
+  LEGACY_FEEDER_NAME: "nomciu_feeder_name",
+  LEGACY_LAST_HOUSEHOLD: "nomciu_last_household",
 };
 
 const STORAGE_KEYS = {
-  CURRENT_HOUSEHOLD_ID: "nomciu_current_household_id",
-  FEEDER_NAME: "nomciu_feeder_name",
-  RECENT_HOUSEHOLDS: "nomciu_recent_households",
-  MOCK_HOUSEHOLDS: "nomciu_mock_households",
+  CURRENT_HOUSEHOLD_ID: "feedy_current_household_id",
+  FEEDER_NAME: "feedy_feeder_name",
+  RECENT_HOUSEHOLDS: "feedy_recent_households",
+  MOCK_HOUSEHOLDS: "feedy_mock_households",
+  LEGACY_HOUSEHOLD_ID: "nomciu_current_household_id",
+  LEGACY_FEEDER_NAME: "nomciu_feeder_name",
+  LEGACY_RECENT_HOUSEHOLDS: "nomciu_recent_households",
 };
 
 // Cookie Helpers (Works across PWA icon re-installs on iOS/Android)
@@ -35,12 +41,16 @@ export function removeCookie(name: string) {
 export function getStoredHouseholdId(): string | null {
   if (typeof window === "undefined") return null;
 
-  // 1. Try localStorage
-  const fromLocal = localStorage.getItem(STORAGE_KEYS.CURRENT_HOUSEHOLD_ID);
+  // 1. Try localStorage (feedy then legacy nomciu)
+  const fromLocal =
+    localStorage.getItem(STORAGE_KEYS.CURRENT_HOUSEHOLD_ID) ||
+    localStorage.getItem(STORAGE_KEYS.LEGACY_HOUSEHOLD_ID);
   if (fromLocal) return fromLocal;
 
-  // 2. Fallback to cookie (e.g. if PWA home screen icon was re-added)
-  const fromCookie = getCookie(COOKIE_KEYS.CURRENT_HOUSEHOLD_ID);
+  // 2. Fallback to cookie
+  const fromCookie =
+    getCookie(COOKIE_KEYS.CURRENT_HOUSEHOLD_ID) ||
+    getCookie(COOKIE_KEYS.LEGACY_HOUSEHOLD_ID);
   if (fromCookie) {
     try {
       localStorage.setItem(STORAGE_KEYS.CURRENT_HOUSEHOLD_ID, fromCookie);
@@ -50,7 +60,9 @@ export function getStoredHouseholdId(): string | null {
 
   // 3. Fallback to last known household cookie
   try {
-    const lastRaw = getCookie(COOKIE_KEYS.LAST_HOUSEHOLD);
+    const lastRaw =
+      getCookie(COOKIE_KEYS.LAST_HOUSEHOLD) ||
+      getCookie(COOKIE_KEYS.LEGACY_LAST_HOUSEHOLD);
     if (lastRaw) {
       const parsed = JSON.parse(lastRaw);
       if (parsed && parsed.id) {
@@ -81,10 +93,14 @@ export function clearStoredHouseholdId() {
 // Feeder Nickname storage
 export function getStoredFeederName(): string {
   if (typeof window === "undefined") return "";
-  const fromLocal = localStorage.getItem(STORAGE_KEYS.FEEDER_NAME);
+  const fromLocal =
+    localStorage.getItem(STORAGE_KEYS.FEEDER_NAME) ||
+    localStorage.getItem(STORAGE_KEYS.LEGACY_FEEDER_NAME);
   if (fromLocal) return fromLocal;
 
-  const fromCookie = getCookie(COOKIE_KEYS.FEEDER_NAME);
+  const fromCookie =
+    getCookie(COOKIE_KEYS.FEEDER_NAME) ||
+    getCookie(COOKIE_KEYS.LEGACY_FEEDER_NAME);
   if (fromCookie) {
     try {
       localStorage.setItem(STORAGE_KEYS.FEEDER_NAME, fromCookie);
@@ -111,7 +127,9 @@ export function getRecentHouseholds(): RecentHousehold[] {
   let recents: RecentHousehold[] = [];
 
   try {
-    const raw = localStorage.getItem(STORAGE_KEYS.RECENT_HOUSEHOLDS);
+    const raw =
+      localStorage.getItem(STORAGE_KEYS.RECENT_HOUSEHOLDS) ||
+      localStorage.getItem(STORAGE_KEYS.LEGACY_RECENT_HOUSEHOLDS);
     if (raw) {
       recents = JSON.parse(raw);
     }
@@ -119,7 +137,9 @@ export function getRecentHouseholds(): RecentHousehold[] {
 
   // Check backup cookie if localStorage was wiped
   try {
-    const cookieRaw = getCookie(COOKIE_KEYS.LAST_HOUSEHOLD);
+    const cookieRaw =
+      getCookie(COOKIE_KEYS.LAST_HOUSEHOLD) ||
+      getCookie(COOKIE_KEYS.LEGACY_LAST_HOUSEHOLD);
     if (cookieRaw) {
       const parsed = JSON.parse(cookieRaw) as RecentHousehold;
       if (parsed && parsed.id) {

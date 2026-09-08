@@ -184,7 +184,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                   🐾
                 </div>
                 <h2 className="text-xl font-black text-white">
-                  Welcome to Nomciu
+                  Welcome to Feedy
                 </h2>
                 <p className="text-xs text-nomciu-muted mt-1">
                   Keep your pet&apos;s meals tracked &amp; synced across roommates.

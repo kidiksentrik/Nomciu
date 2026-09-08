@@ -49,7 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
         <div>
           <h1 className="font-black text-lg tracking-tight text-white flex items-center gap-1.5 leading-none">
-            Nomciu
+            Feedy
           </h1>
           <div className="flex items-center gap-1 mt-0.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />

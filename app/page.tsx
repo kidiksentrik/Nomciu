@@ -115,7 +115,7 @@ export default function Home() {
         </div>
         <div className="flex items-center gap-2 text-stone-200 font-black text-sm">
           <Loader2 className="w-4 h-4 animate-spin text-nomciu-peach" />
-          <span>Waking up Nomciu...</span>
+          <span>Waking up Feedy...</span>
         </div>
       </div>
     );
@@ -190,7 +190,7 @@ export default function Home() {
             Roommates sync automatically in real-time.
           </p>
           <p className="text-[10px] text-stone-500 font-medium mt-0.5">
-            Nomciu • Mobile Pet Feeding Tracker
+            Feedy • Mobile Pet Feeding Tracker
           </p>
         </footer>
       </div>

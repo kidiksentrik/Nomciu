@@ -113,23 +113,18 @@ export const FeedNowButton: React.FC<FeedNowButtonProps> = ({
               {/* Radiant Center Glow */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.25),transparent_65%)] pointer-events-none" />
 
-              {/* Left Content: Badge + Giant Label */}
-              <div className="flex flex-col items-start leading-tight text-left z-10 py-2">
-                <span className="inline-flex items-center gap-1.5 text-[11px] font-black tracking-widest text-white bg-black/25 px-2.5 py-1 rounded-full mb-1.5 border border-white/20 shadow-xs">
-                  <Flame className="w-3.5 h-3.5 fill-amber-300 text-amber-300 animate-bounce" />
-                  PRESS TO FEED
+              {/* Centered Content: Badge + Giant Nomciu! Label + Subtitle */}
+              <div className="flex flex-col items-center justify-center text-center w-full z-10 py-1">
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-black tracking-widest text-white bg-black/25 px-3 py-0.5 rounded-full mb-1 border border-white/20 shadow-xs uppercase">
+                  <Flame className="w-3 h-3 fill-amber-300 text-amber-300 animate-bounce" />
+                  {windowInfo.label} • Press to feed
                 </span>
-                <span className="text-xl sm:text-2xl font-black tracking-tight text-white drop-shadow-[0_2px_5px_rgba(0,0,0,0.6)]">
-                  FEED {windowInfo.label.toUpperCase()} NOW
+                <span className="text-3xl sm:text-4xl font-black tracking-wider text-white drop-shadow-[0_3px_6px_rgba(0,0,0,0.6)] select-none">
+                  Nomciu!
                 </span>
-                <span className="text-xs sm:text-sm font-bold text-red-100/95 normal-case tracking-normal mt-1 drop-shadow-xs">
+                <span className="text-xs font-semibold text-red-100/95 normal-case tracking-normal mt-0.5 drop-shadow-xs">
                   {windowInfo.windowDescription}
                 </span>
-              </div>
-
-              {/* Right Big Emoji / Icon Badge */}
-              <div className="relative z-10 w-16 h-16 rounded-2xl bg-white/25 border-2 border-white/40 backdrop-blur-xs flex items-center justify-center text-4xl shadow-inner group-hover:scale-110 transition-transform">
-                {windowInfo.emoji}
               </div>
             </motion.button>
 

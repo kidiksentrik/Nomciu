@@ -62,11 +62,36 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Convert file to base64 for zero-setup storage in Firestore
+    // Read and compress image client-side to max 400x400 (~30KB) for fast Firestore syncing
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === "string") {
-        setSelectedAvatar(reader.result);
+        const img = new window.Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const maxDim = 400;
+          let width = img.width;
+          let height = img.height;
+          if (width > height) {
+            if (width > maxDim) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            }
+          } else {
+            if (height > maxDim) {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx?.drawImage(img, 0, 0, width, height);
+          const compressed = canvas.toDataURL("image/jpeg", 0.85);
+          setSelectedAvatar(compressed);
+          setCustomPhotoUrl("");
+        };
+        img.src = reader.result;
       }
     };
     reader.readAsDataURL(file);

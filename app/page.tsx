@@ -7,6 +7,7 @@ import { FeedNowButton } from "@/components/FeedNowButton";
 import { MealGrid } from "@/components/MealGrid";
 import { OnboardingModal } from "@/components/OnboardingModal";
 import { InviteModal } from "@/components/InviteModal";
+import { EditPetModal } from "@/components/EditPetModal";
 import { NotificationBanner } from "@/components/NotificationBanner";
 import { useHousehold } from "@/hooks/useHousehold";
 import { useMeals } from "@/hooks/useMeals";
@@ -23,6 +24,7 @@ export default function Home() {
     createHousehold,
     joinHousehold,
     leaveHousehold,
+    updatePetProfile,
   } = useHousehold();
 
   const {
@@ -44,6 +46,7 @@ export default function Home() {
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState<"household" | "feeder">("household");
   const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [isEditPetOpen, setIsEditPetOpen] = useState(false);
 
   // Check URL query param for automatic join link e.g. /?join=749201
   useEffect(() => {
@@ -132,6 +135,7 @@ export default function Home() {
               petName={household.petName}
               petPhotoUrl={household.petPhotoUrl}
               dailyLog={dailyLog}
+              onEditPet={() => setIsEditPetOpen(true)}
             />
           )}
 
@@ -191,6 +195,19 @@ export default function Home() {
           onClose={() => setIsInviteOpen(false)}
           householdName={household.petName}
           joinCode={household.joinCode}
+        />
+      )}
+
+      {/* Edit Pet Profile Modal */}
+      {household && (
+        <EditPetModal
+          isOpen={isEditPetOpen}
+          onClose={() => setIsEditPetOpen(false)}
+          currentPetName={household.petName}
+          currentPetPhotoUrl={household.petPhotoUrl}
+          onSave={async (newName, newPhotoUrl) => {
+            await updatePetProfile(newName, newPhotoUrl);
+          }}
         />
       )}
     </main>

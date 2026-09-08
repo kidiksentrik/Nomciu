@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Household } from "@/types";
 import { db, isFirebaseConfigured } from "@/lib/firebase";
-import { doc, onSnapshot, setDoc, getDoc } from "firebase/firestore";
+import { doc, onSnapshot, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { generateJoinCode } from "@/lib/utils";
 
 const STORAGE_KEYS = {
@@ -220,6 +220,45 @@ export function useHousehold() {
     setHousehold(null);
   }, []);
 
+  // Update pet profile (photo and/or name)
+  const updatePetProfile = useCallback(
+    async (newName?: string, newPhotoUrl?: string) => {
+      if (!householdId) return;
+
+      try {
+        const updates: Partial<Household> = {};
+        if (newName !== undefined && newName.trim()) updates.petName = newName.trim();
+        if (newPhotoUrl !== undefined && newPhotoUrl.trim()) updates.petPhotoUrl = newPhotoUrl.trim();
+
+        if (Object.keys(updates).length === 0) return;
+
+        if (isFirebaseConfigured && db) {
+          const docRef = doc(db, "households", householdId);
+          await updateDoc(docRef, updates);
+        } else {
+          // Local demo mode
+          const raw = localStorage.getItem(STORAGE_KEYS.MOCK_HOUSEHOLDS);
+          const map: Record<string, Household> = raw ? JSON.parse(raw) : {};
+          if (map[householdId]) {
+            map[householdId] = { ...map[householdId], ...updates };
+            localStorage.setItem(STORAGE_KEYS.MOCK_HOUSEHOLDS, JSON.stringify(map));
+            setHousehold(map[householdId]);
+
+            if (typeof BroadcastChannel !== "undefined") {
+              const channel = new BroadcastChannel("nomciu_sync");
+              channel.postMessage({ type: "HOUSEHOLD_UPDATE" });
+              channel.close();
+            }
+          }
+        }
+      } catch (err: any) {
+        console.error("Error updating pet profile:", err);
+        throw err;
+      }
+    },
+    [householdId]
+  );
+
   return {
     household,
     feederName,
@@ -229,6 +268,7 @@ export function useHousehold() {
     createHousehold,
     joinHousehold,
     leaveHousehold,
+    updatePetProfile,
     isDemoMode: !isFirebaseConfigured,
   };
 }

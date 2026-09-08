@@ -10,12 +10,14 @@ interface PetHeroProps {
   petName: string;
   petPhotoUrl: string;
   dailyLog: DailyMealLog;
+  onEditPet?: () => void;
 }
 
 export const PetHero: React.FC<PetHeroProps> = ({
   petName,
   petPhotoUrl,
   dailyLog,
+  onEditPet,
 }) => {
   const [imgError, setImgError] = useState(false);
   const status = getPetStatusHeadline(petName, dailyLog);
@@ -45,7 +47,13 @@ export const PetHero: React.FC<PetHeroProps> = ({
           transition={{ type: "spring", stiffness: 260, damping: 20 }}
           className="relative w-36 h-36 sm:w-40 sm:h-40 rounded-full p-1 bg-gradient-to-tr from-rose-500 via-orange-400 to-amber-400 shadow-2xl"
         >
-          <div className="w-full h-full rounded-full overflow-hidden bg-[#161822] relative border-2 border-[#252836] shadow-inner flex items-center justify-center">
+          <div
+            onClick={onEditPet}
+            className={`w-full h-full rounded-full overflow-hidden bg-[#161822] relative border-2 border-[#252836] shadow-inner flex items-center justify-center ${
+              onEditPet ? "cursor-pointer" : ""
+            }`}
+            title={onEditPet ? "Click to change photo" : undefined}
+          >
             {petPhotoUrl && !imgError ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -64,21 +72,38 @@ export const PetHero: React.FC<PetHeroProps> = ({
             )}
           </div>
 
+          {/* Camera Edit Button Badge */}
+          {onEditPet && (
+            <button
+              onClick={onEditPet}
+              title="Change Pet Photo"
+              className="absolute -top-1 -right-1 w-9 h-9 rounded-full bg-[#181A24] border border-[#2D3142] hover:border-nomciu-peach text-stone-200 hover:text-white flex items-center justify-center shadow-xl transition active:scale-95 group/cam z-10"
+            >
+              <Camera className="w-4 h-4 text-nomciu-peach group-hover/cam:scale-110 transition-transform" />
+            </button>
+          )}
+
           {/* Floating emotional badge */}
           <motion.div
             key={status.emoji}
             initial={{ scale: 0, rotate: -20 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ type: "spring", stiffness: 350, damping: 15 }}
-            className="absolute -bottom-1 -right-1 w-11 h-11 rounded-full bg-[#181A24] shadow-xl border border-[#2D3142] flex items-center justify-center text-2xl select-none"
+            className="absolute -bottom-1 -right-1 w-11 h-11 rounded-full bg-[#181A24] shadow-xl border border-[#2D3142] flex items-center justify-center text-2xl select-none z-10"
           >
             {status.emoji}
           </motion.div>
         </motion.div>
       </div>
 
-      {/* Pet Name */}
-      <div className="flex items-center gap-1.5 mb-1">
+      {/* Pet Name with Optional Edit Trigger */}
+      <div
+        onClick={onEditPet}
+        className={`flex items-center gap-1.5 mb-1 ${
+          onEditPet ? "cursor-pointer hover:opacity-90 transition" : ""
+        }`}
+        title={onEditPet ? "Click to edit" : undefined}
+      >
         <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-sm">
           {petName}
         </h2>

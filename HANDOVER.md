@@ -23,7 +23,7 @@ This document is the **single source of truth** for any developer or AI assistan
 
 - **Primary Production URL**: [https://feedy-tracker.vercel.app](https://feedy-tracker.vercel.app)
 - **Legacy Compatibility URL**: [https://nomciu.vercel.app](https://nomciu.vercel.app) *(Kept active so existing roommates' installed PWA icons never break)*
-- **GitHub Repository**: [https://github.com/kidiksentrik/Nomciu](https://github.com/kidiksentrik/Nomciu) (branch: `main`)
+- **GitHub Repository**: [https://github.com/kidiksentrik/Feedy](https://github.com/kidiksentrik/Feedy) (branch: `main`)
 - **Hosting Provider**: Vercel (automatic continuous deployment on push to `main`)
 - **Database**: Google Cloud Firestore (`firebase` v11)
   - **Region**: `europe-central2` (Warsaw, Poland) — ultra-low latency (<50ms) for European users.

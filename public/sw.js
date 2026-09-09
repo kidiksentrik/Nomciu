@@ -1,4 +1,12 @@
 // Feedy Service Worker for Background Push Notifications
+self.addEventListener("install", (event) => {
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(clients.claim());
+});
+
 self.addEventListener("push", (event) => {
   if (!event.data) return;
 
@@ -13,6 +21,10 @@ self.addEventListener("push", (event) => {
       tag: data.tag || "feedy-feed",
       data: {
         url: data.url || "/",
+        householdId: data.householdId,
+        mealType: data.mealType,
+        fedBy: data.fedBy,
+        time: data.time,
       },
       renotify: true,
       requireInteraction: false,
@@ -26,15 +38,24 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const urlToOpen = event.notification.data?.url || "/";
+  const notifData = event.notification.data || {};
+  const urlToOpen = notifData.url || "/";
 
   event.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+      // 1. If an active client window is already open in background, notify it and focus
       for (const client of clientList) {
-        if (client.url.includes(self.location.origin) && "focus" in client) {
-          return client.focus();
+        if (client.url.includes(self.location.origin)) {
+          client.postMessage({
+            type: "NOTIFICATION_CLICKED",
+            payload: notifData,
+          });
+          if ("focus" in client) {
+            return client.focus();
+          }
         }
       }
+      // 2. If no window was open, launch a new window
       if (clients.openWindow) {
         return clients.openWindow(urlToOpen);
       }

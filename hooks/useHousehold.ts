@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Household, RecentHousehold } from "@/types";
 import { db, isFirebaseConfigured } from "@/lib/firebase";
-import { doc, onSnapshot, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot, setDoc, getDoc, getDocFromServer, updateDoc } from "firebase/firestore";
 import { generateJoinCode } from "@/lib/utils";
 import {
   getStoredHouseholdId,
@@ -135,6 +135,43 @@ export function useHousehold() {
         channel?.close();
       };
     }
+  }, [householdId]);
+
+  // Wake-up / foreground refresh for household
+  useEffect(() => {
+    if (typeof window === "undefined" || !householdId || !isFirebaseConfigured || !db) return;
+
+    const handleWakeUp = async () => {
+      if (!db || !householdId) return;
+      try {
+        const householdRef = doc(db, "households", householdId);
+        let docSnap;
+        try {
+          docSnap = await getDocFromServer(householdRef);
+        } catch {
+          docSnap = await getDoc(householdRef);
+        }
+        if (docSnap && docSnap.exists()) {
+          const data = docSnap.data() as Household;
+          setHousehold(data);
+        }
+      } catch (err) {
+        console.warn("Failed to wake-up sync household:", err);
+      }
+    };
+
+    window.addEventListener("focus", handleWakeUp);
+    window.addEventListener("pageshow", handleWakeUp);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") handleWakeUp();
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener("focus", handleWakeUp);
+      window.removeEventListener("pageshow", handleWakeUp);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, [householdId]);
 
   // Save feeder name to multi-layer storage

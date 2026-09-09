@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { DailyMealLog, MealType } from "@/types";
 import { db, isFirebaseConfigured } from "@/lib/firebase";
-import { doc, onSnapshot, setDoc } from "firebase/firestore";
+import { doc, onSnapshot, setDoc, getDoc, getDocFromServer } from "firebase/firestore";
 import { getTodayDateString, formatTime, getDefaultDailyMealLog } from "@/lib/utils";
 
 export function useMeals(householdId: string | null, feederName: string) {
@@ -91,6 +91,95 @@ export function useMeals(householdId: string | null, feederName: string) {
     }
   }, [householdId, todayDateString]);
 
+  // Direct server fetch on wake-up / foreground to bypass stale background sockets
+  const fetchFreshMealLog = useCallback(async () => {
+    if (!householdId) return;
+
+    const currentToday = getTodayDateString();
+    setTodayDateString(currentToday);
+
+    if (isFirebaseConfigured && db) {
+      try {
+        const logRef = doc(db, "households", householdId, "logs", currentToday);
+        let docSnap;
+        try {
+          docSnap = await getDocFromServer(logRef);
+        } catch {
+          docSnap = await getDoc(logRef);
+        }
+
+        if (docSnap && docSnap.exists()) {
+          setDailyLog(docSnap.data() as DailyMealLog);
+        }
+      } catch (err) {
+        console.warn("Failed to wake-up fetch meal log:", err);
+      }
+    } else {
+      const storageKey = `nomciu_log_${householdId}_${currentToday}`;
+      try {
+        const raw = localStorage.getItem(storageKey);
+        if (raw) setDailyLog(JSON.parse(raw));
+      } catch (_) {}
+    }
+  }, [householdId]);
+
+  // Listen for window foreground, focus, pageshow, and Service Worker notification clicks
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleWakeUp = () => {
+      fetchFreshMealLog();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        fetchFreshMealLog();
+      }
+    };
+
+    const handleServiceWorkerMessage = (event: MessageEvent) => {
+      if (event.data?.type === "NOTIFICATION_CLICKED") {
+        const payload = event.data.payload;
+        // 1. Instant optimistic update if mealType is included in push data
+        if (
+          payload?.mealType &&
+          (payload.mealType === "breakfast" ||
+            payload.mealType === "lunch" ||
+            payload.mealType === "dinner")
+        ) {
+          const mType = payload.mealType as MealType;
+          setDailyLog((prev) => ({
+            ...prev,
+            [mType]: {
+              completed: true,
+              fedBy: payload.fedBy || prev[mType]?.fedBy || "Roommate",
+              fedAt: payload.time || prev[mType]?.fedAt || formatTime(),
+            },
+          }));
+        }
+        // 2. Fetch fresh document from Firestore server
+        fetchFreshMealLog();
+      }
+    };
+
+    window.addEventListener("focus", handleWakeUp);
+    window.addEventListener("pageshow", handleWakeUp);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.addEventListener("message", handleServiceWorkerMessage);
+    }
+
+    return () => {
+      window.removeEventListener("focus", handleWakeUp);
+      window.removeEventListener("pageshow", handleWakeUp);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.removeEventListener("message", handleServiceWorkerMessage);
+      }
+    };
+  }, [fetchFreshMealLog]);
+
   // Persist updated meal log
   const saveMealLog = useCallback(
     async (updatedLog: DailyMealLog) => {
@@ -149,6 +238,7 @@ export function useMeals(householdId: string | null, feederName: string) {
           body: JSON.stringify({
             householdId,
             petName: petName || "your pet",
+            mealType,
             mealLabel: mealLabels[mealType],
             fedBy: who,
             time: timeStr,

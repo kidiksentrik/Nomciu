@@ -74,11 +74,12 @@ To prevent data loss when users remove and re-add PWA home screen icons on iOS/A
 
 ### C. Web Push Notification Pipeline
 1. **Subscription**:
-   - PWA registers service worker at `/sw.js`.
+   - PWA registers service worker at `/sw.js` with `self.skipWaiting()` and `clients.claim()`.
    - Device subscribes via `PushManager.subscribe()` using `NEXT_PUBLIC_VAPID_PUBLIC_KEY`.
    - Subscription endpoint and auth keys are saved to Firestore: `households/{householdId}/subscriptions/{deviceId}`.
 2. **Dispatch (`app/api/notify/route.ts`)**:
    - Triggered when anyone feeds the pet or clicks **[Send Test Alert]** in the profile menu.
+   - Includes `mealType`, `fedBy`, `time`, and `householdId` in notification data payload.
    - **Self-Filtering Logic**: The person who pressed `FEED` does not receive self-notifications; all other registered roommates in the household receive the notification simultaneously.
    - For test alerts (`isTest: true`), the notification is delivered directly to the requesting device.
    - Notification payload uses PNG icons (`/icon.png`) for universal iOS WebKit & Android lock-screen compatibility.
@@ -86,6 +87,14 @@ To prevent data loss when users remove and re-add PWA home screen icons on iOS/A
 ### D. Client-Side Image Compression (`components/EditPetModal.tsx`)
 - When users upload custom pet photos, an HTML5 Canvas downsamples the image client-side to max 400x400px (JPEG 85%, ~30KB).
 - The compressed base64 string is stored directly in the Firestore household document, enabling instant photo updates for all roommates with zero external S3/Firebase Storage billing!
+
+### E. Background Wake-Up & Push Click Real-Time Sync (`hooks/useMeals.ts` & `public/sw.js`)
+- **The Problem**: On iOS WebKit and Android, when a PWA is backgrounded/locked, the OS freezes network sockets. Tapping a lock-screen push notification brings the dormant window into focus via `client.focus()`, but Firestore's WebSocket connection takes 15–30 seconds to re-handshake, leaving the user looking at the old pre-fed state until they hard-restart the app.
+- **The Solution**:
+  1. **SW `postMessage` Bridge**: When `notificationclick` fires in `public/sw.js`, it sends a `NOTIFICATION_CLICKED` message with the meal payload to the client window before calling `client.focus()`.
+  2. **0-Second Optimistic Update**: `useMeals.ts` intercepts `NOTIFICATION_CLICKED` and immediately marks `dailyLog[mealType]` as completed so the user sees the feeding record instantly upon unlocking.
+  3. **Direct Server Re-Fetch**: Calls `getDocFromServer(logRef)` to bypass the local cache and query Firestore backend directly.
+  4. **Multi-Event Foreground Triggers**: Automatically syncs on `visibilitychange` (when returning to the app), `window.focus`, and `window.pageshow`.
 
 ---
 

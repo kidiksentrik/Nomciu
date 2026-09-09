@@ -18,7 +18,7 @@ if (vapidPublicKey && vapidPrivateKey) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { householdId, petName, mealLabel, fedBy, time, isTest } = body;
+    const { householdId, petName, mealType, mealLabel, fedBy, time, isTest } = body;
 
     if (!householdId) {
       return NextResponse.json({ error: "Missing householdId" }, { status: 400 });
@@ -51,6 +51,10 @@ export async function POST(req: NextRequest) {
       badge: "/icon.png",
       url: "/",
       tag: isTest ? `feedy-test-${Date.now()}` : `feedy-feed-${Date.now()}`,
+      householdId,
+      mealType,
+      fedBy,
+      time,
     });
 
     let sentCount = 0;
